@@ -1,5 +1,10 @@
 import ballerina/http;
 
+@http:ServiceConfig {
+    cors: {
+        allowOrigins: ["*"]
+    }
+}
 service /orders on new http:Listener(9090) {
     resource function post 'submit(Order 'orders) returns http:Ok|SubmitFailureResponse {
         Order|error submitOrderResult = submitOrder('orders);
