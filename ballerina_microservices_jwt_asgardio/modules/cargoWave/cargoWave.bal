@@ -6,20 +6,20 @@ listener http:Listener cargowaveListner = check new (9094);
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["*"]
-    }
-//     auth: [
-//         {
-//             oauth2IntrospectionConfig: {
-//                 url: "https://api.asgardeo.io/t/orgsd/oauth2/introspect",
-//                 tokenTypeHint: "access_token"
-//                 // clientConfig: {
-//                 //     secureSocket: {
-//                 //         cert: "https://api.asgardeo.io/t/orgsd/oauth2/jwks"
-//                 //     }
-//                 // }
-//             }
-//         }
-//     ]
+    },
+    auth: [
+        {
+            oauth2IntrospectionConfig: {
+                url: "https://api.asgardeo.io/t/orgsd/oauth2/introspect",
+                tokenTypeHint: "access_token",
+                clientConfig: {
+                    secureSocket: {
+                        cert: "../../resources/public.crt"
+                    }
+                }
+            }
+        }
+    ]
 }
 
 service / on cargowaveListner {

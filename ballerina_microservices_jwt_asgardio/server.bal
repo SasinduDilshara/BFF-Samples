@@ -25,6 +25,7 @@ service /cargos on new http:Listener(9090) {
         if result is Cargo {
             error? e = informCargoPartners(cargo.cargoId);
             if e is error {
+                log:printError("Error: ", e);
                 return <SubmitFailureResponse>{
                     body: {message: string `Error while informing cargo partners ${e.message()}`}
                 };
@@ -32,6 +33,7 @@ service /cargos on new http:Listener(9090) {
             http:Ok res = {};
             return res;
         }
+        log:printError("Error: ", result);
         return <SubmitFailureResponse>{
             body: {
                 message: result.message()
@@ -55,12 +57,17 @@ function informCargoPartners(string insertedCargoId) returns error? {
         url = tradelogixListnerUrl;
     }
 
-    // http:Client 'client = check new (url, auth = {
-    //     tokenUrl: getIssuer(),
-    //     clientId: getClientId(),
-    //     clientSecret: getClientSecret()
-    // });
-    http:Client 'client = check new (url);
+    http:Client 'client = check new (url, auth = {
+        tokenUrl: getIssuer(),
+        clientId: getClientId(),
+        clientSecret: getClientSecret(),
+        clientConfig: {
+            secureSocket: {
+                cert: "./resources/public.crt"
+            }
+        }
+    });
+    // http:Client 'client = check new (url);
     http:Response|error res = 'client->post("/submit", cargo);
     if res is http:Response {
         if res.statusCode == 202 {
