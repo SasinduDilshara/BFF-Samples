@@ -1,11 +1,4 @@
-import ballerina/http;
-
-public type SubmitFailureResponse record {|
-    *http:BadRequest;
-    record {
-        string message;
-    } body;
-|};
+import ballerina/persist as _;
 
 public type Order record {|
     readonly string orderId;
