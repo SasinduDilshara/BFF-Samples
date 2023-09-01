@@ -1,6 +1,6 @@
 import ballerina/persist as _;
 
-public type Order record {|
+public type OrderRecord record {|
     readonly string orderId;
     string customerId;
     float totalAmount;

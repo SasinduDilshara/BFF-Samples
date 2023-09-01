@@ -6,7 +6,7 @@ import ballerina/http;
     }
 }
 service /orders on new http:Listener(9090) {
-    resource function post 'submit(Order 'order) returns http:Ok|SubmitFailureResponse {
+    resource function post 'submit(OrderRecord 'order) returns http:Ok|SubmitFailureResponse {
         string[]|error submitOrderResult = submitOrder('order);
         if submitOrderResult is string[] {
             http:Ok res = {};
@@ -19,8 +19,8 @@ service /orders on new http:Listener(9090) {
         };
     };
 
-    resource function get getAllOrders() returns Order[]|error {
-        stream<Order, error?> orders = getAllOrders();
-        return from Order 'order in orders select 'order;
+    resource function get getAllOrders() returns OrderRecord[]|error {
+        stream<OrderRecord, error?> orders = getAllOrders();
+        return from OrderRecord 'order in orders select 'order;
     };
 }
