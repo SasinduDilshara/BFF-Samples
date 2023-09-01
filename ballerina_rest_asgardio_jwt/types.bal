@@ -1,7 +1,5 @@
 import ballerina/http;
 
-
-
 public type SubmitFailureResponse record {|
     *http:BadRequest;
     record {
@@ -25,4 +23,30 @@ public enum OrderStatus {
     DELIVERED,
     CANCELED,
     RETURNED
+};
+
+public enum ShipStatus {
+    DOCKED,
+    DEPARTED,
+    IN_TRANSIT,
+    COMPLETED,
+    CANCELED
+};
+
+public type Cargo record {|
+    readonly string cargoId;
+    string? eta;
+    ShipStatus status;
+    string lat;
+    string lon;
+    string startFrom;
+    string? endFrom;
+    string volume;
+    CargoType 'type;
+|};
+
+public enum CargoType {
+    SHIPEX = "ShipEx",
+    CARGO_WAVE = "CargoWave",
+    TRADE_LOGIX = "TradeLogix"
 };
