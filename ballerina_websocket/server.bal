@@ -3,18 +3,13 @@ import ballerina/log;
 import ballerina/websocket;
 
 service /orders on new websocket:Listener(9091) {
-    resource function get .(string id) returns websocket:Service {
-        return new OrderService(id);
+    resource function get .() returns websocket:Service {
+        return new OrderService();
     }
 }
 
 distinct service class OrderService {
     *websocket:Service;
-    string orderId;
-
-    public function init(string orderId) {
-        self.orderId = orderId;
-    }
 
     remote function onOpen(websocket:Caller caller) {
         float lat;
@@ -25,11 +20,12 @@ distinct service class OrderService {
         while true {
             lat = latitudes[i % 5];
             lon = longitudes[i % 5];
+            i = i + 1;
             error? e = caller->writeTextMessage(string `${lat}, ${lon}`);
             if e is error {
                 log:printError("Error", e);
             }
-            runtime:sleep(100);
+            runtime:sleep(1);
         }
     }
 }
