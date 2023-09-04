@@ -14,7 +14,7 @@ listener http:Listener cargowaveListner = check new (9094);
                 tokenTypeHint: "access_token",
                 clientConfig: {
                     secureSocket: {
-                        cert: "../../resources/public.crt"
+                        cert: "../../resources/public.cer"
                     }
                 }
             }

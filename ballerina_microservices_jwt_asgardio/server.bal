@@ -1,5 +1,6 @@
 import ballerina/log;
 import ballerina/http;
+import ballerina_microservices_jwt_asgardio.cargoWave as _;
 
 @http:ServiceConfig {
     cors: {
@@ -25,7 +26,8 @@ service /cargos on new http:Listener(9090) {
         if result is Cargo {
             error? e = informCargoPartners(cargo.cargoId);
             if e is error {
-                log:printError("Error: ", e);
+                log:printDebug("Error message: " + e.message());
+                log:printError("Error message: " + e.message(), e);
                 return <SubmitFailureResponse>{
                     body: {message: string `Error while informing cargo partners ${e.message()}`}
                 };
@@ -63,7 +65,7 @@ function informCargoPartners(string insertedCargoId) returns error? {
         clientSecret: getClientSecret(),
         clientConfig: {
             secureSocket: {
-                cert: "./resources/public.crt"
+                cert: "./resources/public.cer"
             }
         }
     });
