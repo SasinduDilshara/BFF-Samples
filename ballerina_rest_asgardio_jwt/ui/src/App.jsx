@@ -9,7 +9,7 @@ function App() {
     signOutRedirectURL: "http://localhost:3000",
     clientID: "s0PYeIeVCb1fVPPVMfBLMde7tNka",
     baseUrl: "https://api.asgardeo.io/t/orgsd",
-    scope: ["openid", "email", "profile"]
+    scope: ["openid", "email", "profile", "read_data", "write_data"]
   };
 
   return (
