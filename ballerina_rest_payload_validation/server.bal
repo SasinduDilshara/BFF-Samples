@@ -1,4 +1,3 @@
-import ballerina/io;
 import ballerina/http;
 
 @http:ServiceConfig {
@@ -10,7 +9,6 @@ service /orders on new http:Listener(9090) {
     resource function post 'submit(Order 'order) returns http:Ok|SubmitFailureResponse {
         Order|error submitOrderResult;
         if 'order["isUpdate"] == true {
-            io:println("update order", 'order);
             submitOrderResult = updateOrder('order);
         } else {
             submitOrderResult = submitOrder('order);
