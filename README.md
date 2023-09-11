@@ -180,7 +180,7 @@ $ cd ballerina_microservices_jwt_asgardeo/ui
 $ npm start
 ```
 
-## Let Ballerina write the data access code for your apps
+## Ballerina Persists module with databases
 
 Ballerina's persistence features offer a straightforward way to work with data sources, making it easier to build an application's data access layer. By simply defining the required Ballerina records, the persistence package auto-generates all data access functions. This eliminates repetitive code, providing a simplified interface for inserting, updating and querying data with data tables directly mapped to Ballerina records.
 
