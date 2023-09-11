@@ -14,7 +14,12 @@ listener http:Listener cargowaveListner = check new (9094);
                 tokenTypeHint: "access_token",
                 clientConfig: {
                     secureSocket: {
-                        cert: "../../resources/public.cer"
+                        cert: "../../resources/public.crt"
+                    },
+                    auth: {
+                        clientId: "<Client_id>",
+                        clientSecret: "<client_secret>",
+                        tokenUrl: "https://api.asgardeo.io/t/orgsd/oauth2/token"
                     }
                 }
             }
