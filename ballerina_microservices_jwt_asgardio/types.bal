@@ -1,12 +1,3 @@
-import ballerina/http;
-
-public type SubmitFailureResponse record {|
-    *http:BadRequest;
-    record {
-        string message;
-    } body;
-|};
-
 public enum CargoStatus {
     DOCKED,
     DEPARTED,

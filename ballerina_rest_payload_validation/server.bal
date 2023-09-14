@@ -6,28 +6,39 @@ import ballerina/http;
     }
 }
 service /orders on new http:Listener(9090) {
-    resource function post 'submit(Order 'order) returns http:Ok|SubmitFailureResponse {
-        Order|error submitOrderResult;
+    resource function post 'submit(Order 'order) returns http:Ok|http:BadRequest {
         if 'order["isUpdate"] == true {
-            submitOrderResult = updateOrder('order);
+            Order|error updatedOrderResult = updateOrder('order);
+            if updatedOrderResult is error {
+                return <http:BadRequest>{
+                    body: {
+                        message: updatedOrderResult.message()
+                    }
+                };
+            }
         } else {
-            submitOrderResult = submitOrder('order);
+            orderTable.push('order);
         }
-        if submitOrderResult is Order {
-            http:Ok res = {};
-            return res;
-        }
-        return <SubmitFailureResponse>{
+        return <http:Ok>{
             body: {
-                message: submitOrderResult.message()
+                message: "Order submitted successfully"
             }
         };
     };
 
-    resource function get getOrders(string? id) returns Order[]|Order|error {
+    resource function get getOrders(string? id) returns Order[]|Order|http:BadRequest {
         if id is string {
-            return getOrder(id);
+            foreach Order item in orderTable {
+                if item.orderId == id {
+                    return item;
+                }
+            }
+            return {
+                body: {
+                    message: "Order not found"
+                }
+            };
         }
-        return getAllOrders();
+        return orderTable;
     };
 }

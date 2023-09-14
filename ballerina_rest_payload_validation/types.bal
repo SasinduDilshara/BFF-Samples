@@ -1,12 +1,4 @@
 import ballerina/constraint;
-import ballerina/http;
-
-public type SubmitFailureResponse record {|
-    *http:BadRequest;
-    record {
-        string message;
-    } body;
-|};
 
 public type Order record {
     @constraint:String {

@@ -1,7 +1,5 @@
 // These values are set in `Config.toml` file.
-configurable string issuer = ?;
-configurable string audience = ?;
-configurable string jwksUrl = ?;
+
 
 public function getIssuer() returns string {
     return issuer;

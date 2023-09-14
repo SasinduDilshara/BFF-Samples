@@ -1,5 +1,9 @@
 import ballerina/http;
 
+configurable string issuer = ?;
+configurable string audience = ?;
+configurable string jwksUrl = ?;
+
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["*"]
@@ -7,11 +11,11 @@ import ballerina/http;
     auth: [
         {
             jwtValidatorConfig: {
-                issuer: getIssuer(),
-                audience: getAudience(),
+                issuer: issuer,
+                audience: audience,
                 signatureConfig: {
                     jwksConfig: {
-                        url: getJwksUrl()
+                        url: jwksUrl
                     }
                 }
             }, 
@@ -25,17 +29,14 @@ service / on new http:Listener(9090) {
             scopes: ["read_data", "write_data"]
         }
     }
-    resource function post orders/submit(Order 'orders) returns http:Ok|SubmitFailureResponse {
-        Order|error submitOrderResult = submitOrder('orders);
-        if submitOrderResult is Order {
-            http:Ok res = {};
-            return res;
-        }
-        return <SubmitFailureResponse>{
+    resource function post orders/submit(Order 'orders) returns http:Ok {
+        orderTable.push('orders);
+        http:Ok res = {
             body: {
-                message: submitOrderResult.message()
+                message: "Order submitted successfully"
             }
         };
+        return res;
     };
 
     @http:ResourceConfig {
@@ -44,7 +45,7 @@ service / on new http:Listener(9090) {
         }
     }
     resource function get orders/getAllOrders() returns Order[] {
-        return getAllOrders();
+        return orderTable;
     };
 
 
@@ -53,17 +54,14 @@ service / on new http:Listener(9090) {
             scopes: ["write_data"]
         }
     }
-    resource function post cargos/submit(Cargo 'cargos) returns http:Ok|SubmitFailureResponse {
-        Cargo|error submitCargoResult = submitCargo('cargos);
-        if submitCargoResult is Cargo {
-            http:Ok res = {};
-            return res;
-        }
-        return <SubmitFailureResponse>{
+    resource function post cargos/submit(Cargo 'cargos) returns http:Ok {
+        cargoTable.push('cargos);
+        http:Ok res = {
             body: {
-                message: submitCargoResult.message()
+                message: "Cargo submitted successfully"
             }
         };
+        return res;
     };
 
 
@@ -73,6 +71,6 @@ service / on new http:Listener(9090) {
         }
     }
     resource function get cargos/getAllCargos() returns Cargo[] {
-        return getAllCargos();
+        return cargoTable;
     };
 }

@@ -1,4 +1,4 @@
-public Cargo[] cargos = [
+public Cargo[] cargoTable = [
     {
         cargoId: "61588cd7-9fae-424a-b24d-972fe0000123",
         eta: "2023/12/12",
@@ -23,17 +23,8 @@ public Cargo[] cargos = [
     }
 ];
 
-public function submitCargo(Cargo cargo) returns Cargo {
-    cargos.push(cargo);
-    return cargo;
-}
-
-public function getAllCargos() returns Cargo[] {
-    return cargos;
-}
-
 public function getCargoById(string cargoId) returns Cargo|error {
-    foreach Cargo cargo in cargos {
+    foreach Cargo cargo in cargoTable {
         if (cargo.cargoId == cargoId) {
             return cargo;
         }

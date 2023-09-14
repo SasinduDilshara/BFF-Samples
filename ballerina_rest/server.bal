@@ -6,23 +6,26 @@ import ballerina/http;
     }
 }
 service /orders on new http:Listener(9090) {
-    resource function post 'submit(Order 'orders) returns http:Ok|SubmitFailureResponse {
-        Order|error submitOrderResult = submitOrder('orders);
-        if submitOrderResult is Order {
-            http:Ok res = {};
-            return res;
-        }
-        return <SubmitFailureResponse> {
-            body: {
-                message: submitOrderResult.message()
-            }
+    resource function post 'submit(Order 'orders) returns http:Ok {
+        orderTable.push('orders);
+        http:Ok res = {
+            body: "Order submitted successfully"
         };
+        return res;
     };
 
-    resource function get getOrders(string? id) returns Order[]|Order|error {
+    resource function get getOrders(string? id) returns Order[]|Order|http:BadRequest {
         if id is string {
-            return getOrder(id);
+            foreach Order item in orderTable {
+                if item.orderId == id {
+                    return item;
+                }
+            }
+            http:BadRequest res = {
+                body: "Order submitted successfully"
+            };
+            return res;
         }
-        return getAllOrders();
+        return orderTable;
     };
 }

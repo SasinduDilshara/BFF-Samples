@@ -2,6 +2,12 @@ import ballerina/log;
 import ballerina/http;
 import ballerina_microservices_jwt_asgardio.cargoWave as _;
 
+configurable string issuer = ?;
+configurable string audience = ?;
+configurable string jwksUrl = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["*"]
@@ -9,11 +15,11 @@ import ballerina_microservices_jwt_asgardio.cargoWave as _;
     auth: [
         {
             jwtValidatorConfig: {
-                issuer: getIssuer(),
-                audience: getAudience(),
+                issuer: issuer,
+                audience: audience,
                 signatureConfig: {
                     jwksConfig: {
-                        url: getJwksUrl()
+                        url: jwksUrl
                     }
                 }
             }
@@ -21,30 +27,24 @@ import ballerina_microservices_jwt_asgardio.cargoWave as _;
     ]
 }
 service /cargos on new http:Listener(9090) {
-    resource function post 'submit(Cargo cargo) returns http:Ok|SubmitFailureResponse {
-        Cargo|error result = submitCargo(cargo);
-        if result is Cargo {
-            error? e = informCargoPartners(cargo.cargoId);
-            if e is error {
-                log:printDebug("Error message: " + e.message());
-                log:printError("Error message: " + e.message(), e);
-                return <SubmitFailureResponse>{
-                    body: {message: string `Error while informing cargo partners ${e.message()}`}
-                };
-            }
-            http:Ok res = {};
-            return res;
+    resource function post 'submit(Cargo cargo) returns http:Ok|http:BadRequest {
+        cargoTable.push(cargo);
+        error? e = informCargoPartners(cargo.cargoId);
+        if e is error {
+            log:printError("Error message: " + e.message(), e);
+            http:BadRequest res = {
+                 body: {message: string `Error while informing cargo partners ${e.message()}`}
+            };
+            return  res;
         }
-        log:printError("Error: ", result);
-        return <SubmitFailureResponse>{
-            body: {
-                message: result.message()
-            }
+        http:Ok res = {
+            body: "Successfully submitted the cargo"
         };
+        return res;
     };
 
     resource function get getAllCargos() returns Cargo[] {
-        return getAllCargos();
+        return cargoTable;
     };
 }
 
@@ -60,9 +60,9 @@ function informCargoPartners(string insertedCargoId) returns error? {
     }
 
     http:Client 'client = check new (url, auth = {
-        tokenUrl: getIssuer(),
-        clientId: getClientId(),
-        clientSecret: getClientSecret(),
+        tokenUrl: issuer,
+        clientId: clientId,
+        clientSecret: clientSecret,
         clientConfig: {
             secureSocket: {
                 cert: "./resources/public.cer"
