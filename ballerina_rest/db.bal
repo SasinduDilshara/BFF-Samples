@@ -11,3 +11,12 @@ public function submitOrder(Order 'order) returns Order {
 public function getAllOrders() returns Order[] {
     return orders;
 }
+
+public function getOrder(string id) returns Order|error {
+    foreach Order item in orders {
+        if item.orderId == id {
+            return item;
+        }
+    }
+    return error("Order not found");
+}

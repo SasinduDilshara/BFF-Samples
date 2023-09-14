@@ -19,7 +19,10 @@ service /orders on new http:Listener(9090) {
         };
     };
 
-    resource function get getAllOrders() returns Order[] {
+    resource function get getOrders(string? id) returns Order[]|Order|error {
+        if id is string {
+            return getOrder(id);
+        }
         return getAllOrders();
     };
 }
