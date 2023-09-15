@@ -10,12 +10,14 @@ service /sales on new http:Listener(9090) {
 
     // Add a new order by posting a JSON payload
     // Request ID is passed as a header for logging purposes
-    resource function post orders(@http:Header string requestId, Order 'order) returns http:Ok {
-        log:printInfo("Order received: " + requestId);
-        // Order is a Open record. So if the request body contains additional fields,
-        //  we can access the optional fields like this
-        log:printInfo("Additional comments regarding the order " + 'order.["comments"]);
-        orderTable.push('order);
+    resource function post orders(Order 'order) returns http:Ok {
+        // Order type is a Open record. So if the request body contains additional fields,
+        //  we can access those optional fields like this
+        if 'order["isTemporary"] is true {
+            log:printInfo("Order is temporary");
+        } else {
+            orderTable.push('order);
+        }
         http:Ok res = {
             body: "Order submitted successfully"
         };
