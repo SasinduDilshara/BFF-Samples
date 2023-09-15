@@ -9,7 +9,6 @@ import ballerina/log;
 service /sales on new http:Listener(9090) {
 
     // Add a new order by posting a JSON payload
-    // Request ID is passed as a header for logging purposes
     resource function post orders(Order 'order) returns http:Ok {
         // Order type is a Open record. So if the request body contains additional fields,
         //  we can access those optional fields like this

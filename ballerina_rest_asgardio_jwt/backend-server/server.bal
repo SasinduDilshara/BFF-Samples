@@ -18,18 +18,19 @@ configurable string jwksUrl = ?;
                         url: jwksUrl
                     }
                 }
-            }, 
+            },
             scopes: ["order_insert", "order_read", "cargo_insert", "cargo_read"]
         }
     ]
 }
-service / on new http:Listener(9090) {
+service /sales on new http:Listener(9090) {
     @http:ResourceConfig {
         auth: {
             scopes: ["order_insert", "order_read"]
         }
     }
-    resource function post orders/submit(Order 'orders) returns http:Ok {
+    // Add a new order by posting a JSON payload
+    resource function post orders(Order 'orders) returns http:Ok {
         orderTable.push('orders);
         http:Ok res = {
             body: {
@@ -44,17 +45,18 @@ service / on new http:Listener(9090) {
             scopes: ["order_read"]
         }
     }
-    resource function get orders/getAllOrders() returns Order[] {
+    // Get all orders. Example: http://localhost:9090/sales/orders
+    resource function get orders() returns Order[] {
         return orderTable;
     };
-
 
     @http:ResourceConfig {
         auth: {
             scopes: ["cargo_insert", "cargo_read"]
         }
     }
-    resource function post cargos/submit(Cargo 'cargos) returns http:Ok {
+    // Add a new cargo by posting a JSON payload
+    resource function post cargos(Cargo 'cargos) returns http:Ok {
         cargoTable.push('cargos);
         http:Ok res = {
             body: {
@@ -64,13 +66,23 @@ service / on new http:Listener(9090) {
         return res;
     };
 
+    @http:ResourceConfig {
+        auth: {
+            scopes: ["cargo_read"]
+        }
+    }
+    // Get all cargos. Example: http://localhost:9090/sales/cargos
+    resource function get cargos() returns Cargo[] {
+        return cargoTable;
+    };
 
     @http:ResourceConfig {
         auth: {
             scopes: ["cargo_read"]
         }
     }
-    resource function get cargos/getAllCargos() returns Cargo[] {
+    // Get cargo by ID. Example: http://localhost:9090/sales/cargos/SP-124
+    resource function get cargos/[string id]() returns Cargo[] {
         return cargoTable;
     };
 }

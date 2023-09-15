@@ -1,11 +1,11 @@
 public type Order record {|
     readonly string orderId;
     string customerId;
-    float totalAmount;
     string? shipId;
     string date;
-    string eta;
     OrderStatus status;
+    int quantity;
+    string item;
 |};
 
 public enum OrderStatus {
@@ -26,13 +26,11 @@ public enum ShipStatus {
 
 public type Cargo record {|
     readonly string cargoId;
-    string? eta;
     ShipStatus status;
     string lat;
     string lon;
     string startFrom;
     string? endFrom;
-    string volume;
     CargoType 'type;
 |};
 
