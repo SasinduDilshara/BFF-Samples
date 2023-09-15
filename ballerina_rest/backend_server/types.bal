@@ -6,6 +6,7 @@ public type Order record {|
     string date;
     string eta;
     OrderStatus status;
+    int quantity;
 |};
 
 public enum OrderStatus {

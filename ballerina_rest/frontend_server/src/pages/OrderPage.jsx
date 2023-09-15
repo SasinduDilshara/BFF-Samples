@@ -39,9 +39,10 @@ export default function OrderPage() {
                 <TableHead>
                     <TableRow>
                         <TableCell>Order Id</TableCell>
-                        <TableCell align="right">Status</TableCell>
-                        <TableCell align="right">ShipId</TableCell>
-                        <TableCell align="right">Estimated Time Arrival</TableCell>
+                        <TableCell align="right"><b>Status</b></TableCell>
+                        <TableCell align="right"><b>ShipId</b></TableCell>
+                        <TableCell align="right"><b>Created at</b></TableCell>
+                        <TableCell align="right"><b>Estimated Arrival</b></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

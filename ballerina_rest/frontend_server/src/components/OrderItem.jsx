@@ -12,6 +12,7 @@ export default function OrderItem({ row }) {
             </TableCell>
             <TableCell align="right">{row.status}</TableCell>
             <TableCell align="right">{row.shipId == null ? "Not Assigned": row.shipId}</TableCell>
+            <TableCell align="right">{row.date}</TableCell>
             <TableCell align="right">{row.eta}</TableCell>
         </TableRow>
     );

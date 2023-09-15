@@ -20,9 +20,23 @@ service /orders on new http:Listener(9090) {
         return orderTable;
     };
 
+    // Here the id parameter will be used as a query parameter
     resource function get getOrderById(string id) returns Order|http:BadRequest {
         foreach Order item in orderTable {
             if item.orderId == id {
+                return item;
+            }
+        }
+        http:BadRequest res = {
+            body: "Order not found"
+        };
+        return res;
+    };
+
+    // Here the id parameter will be used as a path parameter and the date parameter will be used as a query parameter
+    resource function get getOrderByIdAndDate/[string id](string date) returns Order|http:BadRequest {
+        foreach Order item in orderTable {
+            if item.orderId == id && item.date == date {
                 return item;
             }
         }

@@ -4,4 +4,4 @@ export const serverUrl = "http://localhost:9090";
 export const submitOrderUrl = serverUrl + "/orders/submit";
 
 // GET requests
-export const getOrderUrl = serverUrl + "/orders/getAllOrders";
+export const getOrderUrl = serverUrl + "/orders/getOrders";
