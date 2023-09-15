@@ -1,47 +1,45 @@
 import ballerina/log;
 import ballerina/http;
 
-@http:ServiceConfig {
-    cors: {
-        allowOrigins: ["*"]
-    }
-}
-service /orders on new http:Listener(9090) {
-    resource function post 'submit(@http:Header string message, Order 'orders) returns http:Ok {
-        log:printInfo(message);
-        orderTable.push('orders);
-        http:Ok res = {
-            body: "Order submitted successfully"
-        };
-        return res;
-    };
+service /sales on new http:Listener(9090) {
 
-    resource function get getOrders() returns Order[] {
+    // Get all orders
+    resource function get orders() returns Order[] {
         return orderTable;
     };
 
-    // Here the id parameter will be used as a query parameter
-    resource function get getOrderById(string id) returns Order|http:BadRequest {
+    // Get order by ID. Example: http://localhost:9090/sales/orders/HM-238
+    resource function get orders/[string id]() returns Order|http:NotFound {
         foreach Order item in orderTable {
             if item.orderId == id {
                 return item;
             }
         }
-        http:BadRequest res = {
-            body: "Order not found"
+        http:NotFound res = {
+            body: "Order not found. Order ID: " + id
         };
         return res;
     };
 
-    // Here the id parameter will be used as a path parameter and the date parameter will be used as a query parameter
-    resource function get getOrderByIdAndDate/[string id](string date) returns Order|http:BadRequest {
+    // Query orders by customer ID and order status
+    // Example: http://localhost:9090/sales/orders?customer=C-124&status=PENDING
+    resource function get customerOrders(string customer, string status) returns Order[]|http:BadRequest {
+        Order[] customerOrders = [];
         foreach Order item in orderTable {
-            if item.orderId == id && item.date == date {
-                return item;
+            if item.customerId == customer && item.status == status {
+                customerOrders.push(item);
             }
         }
-        http:BadRequest res = {
-            body: "Order not found"
+        return customerOrders;
+    };
+
+    // Add a new order by posting a JSON payload
+    // Request ID is passed as a header for logging purposes
+    resource function post orders(@http:Header string requestId, Order 'order) returns http:Ok {
+        log:printInfo("Order received: " + requestId);
+        orderTable.push('order);
+        http:Ok res = {
+            body: "Order submitted successfully"
         };
         return res;
     };
