@@ -13,11 +13,16 @@ public type Order record {
     float totalAmount;
     string? shipId;
     @constraint:String {
-        pattern: re `^[0-9]{4}-[0-9]{2}-[0-9]{2}$`
+        pattern: re `^[0-9]{4}-[0-9]{1,2}-[0-9]{2}$`
     }
     string date;
     string eta?;
     OrderStatus status;
+
+    @constraint:Int {
+        minValue: 0
+    }
+    int quantity;
 };
 
 public enum OrderStatus {

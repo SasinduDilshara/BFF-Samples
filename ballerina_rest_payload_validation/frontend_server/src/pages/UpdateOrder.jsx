@@ -14,22 +14,28 @@ import { useEffect } from 'react';
 import { Children } from 'react';
 
 const UpdateOrderPage = () => {
-    const {id} = useParams();
-    
+    const { id } = useParams();
+
     const [orderId, setId] = useState('');
     const [date, setDate] = useState('');
     const [eta, setEstimationTime] = useState('');
     const [customerId, setUsername] = useState('');
     const [error, setError] = useState(false);
+    const [quantity, setQuantity] = useState(false);
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
     const [fetchError, setDataFetchError] = useState(null);
     const [data, setData] = useState([]);
 
+    const createdDate = () => {
+        var today = new Date();
+        return today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+      }
+
     const handleSubmit = async event => {
         event.preventDefault();
-        const response = await postAPI(submitOrderUrl, { date, eta, customerId, totalAmount: 0, status: 'PENDING', shipId: null, orderId: orderId, isUpdate: true });
+        const response = await postAPI(submitOrderUrl, { date: createdDate(), eta, customerId, totalAmount: 0, status: 'PENDING', shipId: null, orderId: orderId, isUpdate: true, quantity: parseInt(quantity) });
         if (response.error) {
             setError(true);
         } else {
@@ -81,10 +87,10 @@ const UpdateOrderPage = () => {
                             <TextField
                                 fullWidth
                                 margin="normal"
-                                label="Date"
+                                label="Data need for Arrival"
                                 type="date"
-                                value={date}
-                                onChange={e => setDate(e.target.value)}
+                                value={eta}
+                                onChange={e => setEstimationTime(e.target.value)}
                                 InputLabelProps={{
                                     shrink: true,
                                 }}
@@ -92,13 +98,10 @@ const UpdateOrderPage = () => {
                             <TextField
                                 fullWidth
                                 margin="normal"
-                                label="Estimation Time Arrival"
-                                type="time"
-                                value={eta}
-                                onChange={e => setEstimationTime(e.target.value)}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
+                                label="Quantity"
+                                value={quantity}
+                                type='number'
+                                onChange={e => setQuantity(e.target.value)}
                             />
                             <TextField
                                 fullWidth

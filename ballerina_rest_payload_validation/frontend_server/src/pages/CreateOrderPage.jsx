@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Typography,
   TextField,
@@ -9,18 +9,31 @@ import {
 import { postAPI } from '../api/ApiHandler';
 import { submitOrderUrl } from '../api/Constants';
 import { v4 as uuidv4 } from 'uuid';
-import { useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const CreateOrderPage = () => {
-  const [date, setDate] = useState('');
   const [eta, setEstimationTime] = useState('');
   const [customerId, setUsername] = useState('');
   const [error, setError] = useState(false);
+  const [quantity, setQuantity] = useState(0);
   const navigate = useNavigate();
+
+  const getTotalAmount = () => {
+    return 100;
+  }
+
+  const createdDate = () => {
+    var today = new Date();
+    return today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  }
 
   const handleSubmit = async event => {
     event.preventDefault();
-    const response = await postAPI(submitOrderUrl, { date, eta, customerId, totalAmount: 0, status: 'PENDING', shipId: null, orderId: uuidv4()});
+    const response = await postAPI(submitOrderUrl, { date: createdDate(), eta, customerId, totalAmount: getTotalAmount(), status: 'PENDING', shipId: null, orderId: uuidv4(), quantity: parseInt(quantity)}, {
+      headers: {
+        message: "Calling the create order api /order/submit/"
+      }
+    });
     if (response.error) {
       setError(true);
     } else {
@@ -40,10 +53,10 @@ const CreateOrderPage = () => {
           <TextField
             fullWidth
             margin="normal"
-            label="Date"
+            label="Data need for Arrival"
             type="date"
-            value={date}
-            onChange={e => setDate(e.target.value)}
+            value={eta}
+            onChange={e => setEstimationTime(e.target.value)}
             InputLabelProps={{
               shrink: true,
             }}
@@ -51,13 +64,10 @@ const CreateOrderPage = () => {
           <TextField
             fullWidth
             margin="normal"
-            label="Estimation Time Arrival"
-            type="time"
-            value={eta}
-            onChange={e => setEstimationTime(e.target.value)}
-            InputLabelProps={{
-              shrink: true,
-            }}
+            label="Quantity"
+            value={quantity}
+            type='number'
+            onChange={e => setQuantity(e.target.value)}
           />
           <TextField
             fullWidth

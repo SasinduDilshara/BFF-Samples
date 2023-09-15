@@ -15,6 +15,7 @@ export default function OrderItem({ row }) {
             </TableCell>
             <TableCell align="right">{row.status}</TableCell>
             <TableCell align="right">{row.shipId == null ? "Not Assigned": row.shipId}</TableCell>
+            <TableCell align="right">{row.date}</TableCell>
             <TableCell align="right">{row.eta}</TableCell>
             <CustomButton color="primary" onClick={() => {navigate("/update-order/" + row.orderId)}} disabled={false} label={"Update"} size={'large'}/>
             <TableCell align="right">  </TableCell>
