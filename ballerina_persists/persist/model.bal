@@ -8,6 +8,15 @@ public type OrderRecord record {|
     string date;
     string eta;
     OrderStatus status;
+	Cargo cargo;
+|};
+
+public type Cargo record {|
+    readonly string id;
+    string? eta;
+    string lat;
+    string lon;
+    OrderRecord? 'order;
 |};
 
 public enum OrderStatus {
@@ -16,4 +25,10 @@ public enum OrderStatus {
     DELIVERED,
     CANCELED,
     RETURNED
+};
+
+public enum CargoType {
+    SHIPEX = "ShipEx",
+    CARGO_WAVE = "CargoWave",
+    TRADE_LOGIX = "TradeLogix"
 };

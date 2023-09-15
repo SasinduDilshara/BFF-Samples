@@ -19,14 +19,14 @@ configurable string jwksUrl = ?;
                     }
                 }
             }, 
-            scopes: ["read_data", "write_data"]
+            scopes: ["order_insert", "order_read", "cargo_insert", "cargo_read"]
         }
     ]
 }
 service / on new http:Listener(9090) {
     @http:ResourceConfig {
         auth: {
-            scopes: ["read_data", "write_data"]
+            scopes: ["order_insert", "order_read"]
         }
     }
     resource function post orders/submit(Order 'orders) returns http:Ok {
@@ -41,7 +41,7 @@ service / on new http:Listener(9090) {
 
     @http:ResourceConfig {
         auth: {
-            scopes: ["read_data", "write_data"]
+            scopes: ["order_read"]
         }
     }
     resource function get orders/getAllOrders() returns Order[] {
@@ -51,7 +51,7 @@ service / on new http:Listener(9090) {
 
     @http:ResourceConfig {
         auth: {
-            scopes: ["write_data"]
+            scopes: ["cargo_insert", "cargo_read"]
         }
     }
     resource function post cargos/submit(Cargo 'cargos) returns http:Ok {
@@ -67,7 +67,7 @@ service / on new http:Listener(9090) {
 
     @http:ResourceConfig {
         auth: {
-            scopes: ["write_data"]
+            scopes: ["cargo_read"]
         }
     }
     resource function get cargos/getAllCargos() returns Cargo[] {

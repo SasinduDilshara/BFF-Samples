@@ -25,6 +25,11 @@ service /orders on new http:Listener(9090) {
         return from OrderRecord 'order in orders select 'order;
     };
 
+    resource function get cargoByOrder(string cargoId) returns OrderRecord[]|error {
+        return from OrderRecord 'order in sClient->/orderrecords(targetType = OrderRecord)
+             where 'order.cargoId == cargoId select 'order;
+    };
+
     resource function get getOrder/[string id]() returns OrderRecord|http:BadRequest {
         OrderRecord|error 'order = sClient->/orderrecords/[id];
         if 'order is OrderRecord {

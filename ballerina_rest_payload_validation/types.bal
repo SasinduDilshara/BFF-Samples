@@ -16,7 +16,7 @@ public type Order record {
         pattern: re `^[0-9]{4}-[0-9]{2}-[0-9]{2}$`
     }
     string date;
-    string eta;
+    string eta?;
     OrderStatus status;
 };
 

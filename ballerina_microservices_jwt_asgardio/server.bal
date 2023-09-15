@@ -22,20 +22,26 @@ configurable string clientSecret = ?;
                         url: jwksUrl
                     }
                 }
-            }
+            },
+            scopes: ["cargo_insert", "cargo_read"]
         }
     ]
 }
 service /cargos on new http:Listener(9090) {
+    @http:ResourceConfig {
+        auth: {
+            scopes: ["order_insert"]
+        }
+    }
     resource function post 'submit(Cargo cargo) returns http:Ok|http:BadRequest {
         cargoTable.push(cargo);
         error? e = informCargoPartners(cargo.cargoId);
         if e is error {
             log:printError("Error message: " + e.message(), e);
             http:BadRequest res = {
-                 body: {message: string `Error while informing cargo partners ${e.message()}`}
+                body: {message: string `Error while informing cargo partners ${e.message()}`}
             };
-            return  res;
+            return res;
         }
         http:Ok res = {
             body: "Successfully submitted the cargo"
@@ -43,6 +49,11 @@ service /cargos on new http:Listener(9090) {
         return res;
     };
 
+    @http:ResourceConfig {
+        auth: {
+            scopes: ["order_insert", "order_read"]
+        }
+    }
     resource function get getAllCargos() returns Cargo[] {
         return cargoTable;
     };
@@ -68,6 +79,8 @@ function informCargoPartners(string insertedCargoId) returns error? {
                 cert: "./resources/public.cer"
             }
         }
+    }, secureSocket = {
+        cert: "./resources/public.cer"
     });
     // http:Client 'client = check new (url);
     http:Response|error res = 'client->post("/submit", cargo);

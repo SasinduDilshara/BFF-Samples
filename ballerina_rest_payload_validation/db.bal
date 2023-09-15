@@ -13,7 +13,7 @@ public function updateOrder(Order 'order) returns Order|error {
                 totalAmount: 'order.totalAmount,
                 shipId: 'order.shipId,
                 date: 'order.date,
-                eta: 'order.eta,
+                eta: 'order?.eta,
                 status: 'order.status
             };
             return 'order;
