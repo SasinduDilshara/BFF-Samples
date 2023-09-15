@@ -1,28 +1,27 @@
 import ballerina/constraint;
 
+// Order is an open record. Front-ends can send JSON data with additional fields.
+
 public type Order record {
     @constraint:String {
-        pattern: re `^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`
+        pattern: re `^HM-\d{1,8}$`
     }
     readonly string orderId;
-    string customerId;
-
-    @constraint:Float {
-        minValue: 0
-    }
-    float totalAmount;
-    string? shipId;
     @constraint:String {
-        pattern: re `^[0-9]{4}-[0-9]{1,2}-[0-9]{2}$`
+        pattern: re `^C-\d{1,4}$`
     }
-    string date;
-    string eta?;
-    OrderStatus status;
-
+    string customerId;
     @constraint:Int {
-        minValue: 0
+        minValue: 0, maxValue: 10
     }
     int quantity;
+    @constraint:String {
+        pattern: re `^[0-9]{4}-[0-9]{2}-[0-9]{2}$`
+    }
+    string date; 
+    string? shipId; // ShipId is optional, so that input JSON may not contain a ship ID   
+    OrderStatus status;
+    string item;
 };
 
 public enum OrderStatus {

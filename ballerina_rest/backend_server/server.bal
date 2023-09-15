@@ -1,9 +1,14 @@
 import ballerina/log;
 import ballerina/http;
 
+@http:ServiceConfig {
+    cors: {
+        allowOrigins: ["*"]
+    }
+}
 service /sales on new http:Listener(9090) {
 
-    // Get all orders
+    // Get all orders. Example: http://localhost:9090/sales/orders
     resource function get orders() returns Order[] {
         return orderTable;
     };
