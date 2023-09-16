@@ -2,32 +2,35 @@ import ballerina/lang.runtime;
 import ballerina/log;
 import ballerina/websocket;
 
-float[] latitudes = [37.7749, 34.0522, 40.7128, 51.5074, -33.8688];
-float[] longitudes = [-122.4194, -118.2437, -74.0060, -0.1278, 151.2093];
-
-service /sales on new websocket:Listener(9091) {
-    // Connect with websocket client.
-    // Example ws://localhost:9091/sales.
-    resource function get .() returns websocket:Service {
-        // Once the WebSocket upgrade is accepted by the UpgradeService, it returns a websocket:Service.
-        return new OrderService();
+// Expose websocker server over port 9091.
+// Example ws://localhost:9091/sales.
+service /logistics on new websocket:Listener(9091) {
+    resource function get vehicles/[string vehicleId]() returns websocket:Service {
+        return new OrderService(vehicleId);
     }
 }
 
-// This service has a fixed set of remote methods that do not have any configs
 distinct service class OrderService {
     *websocket:Service;
 
-    // This method will dispatched when the WebSocket connection is established
-    remote function onOpen(websocket:Caller caller) {
-        float latitude;
-        float longitude;
+    string vehicleId;
+    function init(string vehicleId) {
+        self.vehicleId = vehicleId;        
+    }
+
+    remote function onOpen(websocket:Caller caller) returns error? {
+        Location[]? locations = vehicleLocations[self.vehicleId];
+        if locations is () {
+            return error("Invalid vehicle id");
+        }
         int i = 0;
         while true {
-            latitude = latitudes[i % 5];
-            longitude = longitudes[i % 5];
+            Location currentLocation = {
+                latitude: locations[i % locations.length()].latitude,
+                longitude: locations[i % locations.length()].longitude
+            };
             i = i + 1;
-            error? e = caller->writeMessage({latitude, longitude});
+            error? e = caller->writeMessage(currentLocation);
             if e is error {
                 log:printError("Error while upodating the location details", e);
             }
@@ -35,13 +38,12 @@ distinct service class OrderService {
         }
     }
 
-    // This method will dispatched when the WebSocket connection is closed
     remote function onClose(websocket:Caller caller) {
         log:printInfo("WebSocket connection closed");
     }
 
-    // This method will dispatched when an error occurs in the WebSocket connection.
     remote function onError(websocket:Caller caller, error err) {
         log:printInfo("Error occured", err);
     }
 }
+

@@ -26,7 +26,7 @@ configurable string jwksUrl = ?;
 service /sales on new http:Listener(9090) {
     @http:ResourceConfig {
         auth: {
-            scopes: ["order_insert", "order_read"]
+            scopes: ["order_insert"]
         }
     }
     // Add a new order by posting a JSON payload
@@ -42,7 +42,7 @@ service /sales on new http:Listener(9090) {
 
     @http:ResourceConfig {
         auth: {
-            scopes: ["order_read"]
+            scopes: ["order_read", "order_insert"]
         }
     }
     // Get all orders. Example: http://localhost:9090/sales/orders
@@ -52,7 +52,7 @@ service /sales on new http:Listener(9090) {
 
     @http:ResourceConfig {
         auth: {
-            scopes: ["cargo_insert", "cargo_read"]
+            scopes: ["cargo_insert"]
         }
     }
     // Add a new cargo by posting a JSON payload
@@ -68,7 +68,7 @@ service /sales on new http:Listener(9090) {
 
     @http:ResourceConfig {
         auth: {
-            scopes: ["cargo_read"]
+            scopes: ["cargo_read", "cargo_insert"]
         }
     }
     // Get all cargos. Example: http://localhost:9090/sales/cargos
@@ -78,7 +78,7 @@ service /sales on new http:Listener(9090) {
 
     @http:ResourceConfig {
         auth: {
-            scopes: ["cargo_read"]
+            scopes: ["cargo_read", "cargo_insert"]
         }
     }
     // Get cargo by ID. Example: http://localhost:9090/sales/cargos/SP-124
