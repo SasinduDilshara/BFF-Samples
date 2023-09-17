@@ -27,13 +27,14 @@ configurable string clientSecret = ?;
         }
     ]
 }
-service /cargos on new http:Listener(9090) {
+service /sales on new http:Listener(9090) {
     @http:ResourceConfig {
         auth: {
             scopes: ["order_insert"]
         }
     }
-    resource function post 'submit(Cargo cargo) returns http:Ok|http:BadRequest {
+    // Add a new order by posting a JSON payload
+    resource function post 'cargos(Cargo cargo) returns http:Ok|http:BadRequest {
         cargoTable.push(cargo);
         error? e = informCargoPartners(cargo.cargoId);
         if e is error {
@@ -54,7 +55,8 @@ service /cargos on new http:Listener(9090) {
             scopes: ["order_insert", "order_read"]
         }
     }
-    resource function get getAllCargos() returns Cargo[] {
+    // Get all Cargos. Example: http://localhost:9090/sales/cargos
+    resource function get cargos() returns Cargo[] {
         return cargoTable;
     };
 }

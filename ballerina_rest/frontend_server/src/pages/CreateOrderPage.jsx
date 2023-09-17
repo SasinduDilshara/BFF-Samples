@@ -11,27 +11,42 @@ import { submitOrderUrl } from '../api/Constants';
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 
+let i = 228;
+
 const CreateOrderPage = () => {
-  const [eta, setEstimationTime] = useState('');
+  const [item, setItem] = useState('');
   const [customerId, setUsername] = useState('');
   const [error, setError] = useState(false);
   const [quantity, setQuantity] = useState(0);
+
+  const [option1, setOption1] = useState('');
+  const [option2, setOption2] = useState('');
+
   const navigate = useNavigate();
 
-  const getTotalAmount = () => {
-    return 100;
+  const handleOption1Change = (e) => {
+    setOption1(e.target.value);
+  };
+
+  const handleOption2Change = (e) => {
+    setOption2(e.target.value);
+  };
+
+  const createID = () => {
+    i = i + 1;
+    return "HM-" + i.toString();
   }
 
   const createdDate = () => {
     var today = new Date();
-    return today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    return today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
   }
 
   const handleSubmit = async event => {
     event.preventDefault();
-    const response = await postAPI(submitOrderUrl, { date: createdDate(), eta, customerId, totalAmount: getTotalAmount(), status: 'PENDING', shipId: null, orderId: uuidv4(), quantity: parseInt(quantity)}, {
+    const response = await postAPI(submitOrderUrl, { date: createdDate(), item, customerId, status: 'PENDING', shipId: null, orderId: createID(), quantity: parseInt(quantity) }, {
       headers: {
-        message: "Calling the create order api /order/submit/"
+        requestId: "Calling the create order api /order/submit/"
       }
     });
     if (response.error) {
@@ -40,10 +55,10 @@ const CreateOrderPage = () => {
       setError(false);
       navigate('/orders');
     }
-  };  
+  };
 
   return (
-    error? <div>Something went wrong</div> :
+    error ? <div>Something went wrong</div> :
     <Container component="main" maxWidth="xs">
       <Paper elevation={3} style={{ padding: '20px' }}>
         <Typography variant="h5" align="center">
@@ -53,10 +68,9 @@ const CreateOrderPage = () => {
           <TextField
             fullWidth
             margin="normal"
-            label="Data need for Arrival"
-            type="date"
-            value={eta}
-            onChange={e => setEstimationTime(e.target.value)}
+            label="Item name"
+            value={item}
+            onChange={e => setItem(e.target.value)}
             InputLabelProps={{
               shrink: true,
             }}
