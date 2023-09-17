@@ -1,5 +1,6 @@
 import { TableRow, TableCell } from "@mui/material";
 import React from "react";
+import { Link } from 'react-router-dom';
 
 export default function OrderItem({ row }) {
     return (
@@ -8,7 +9,7 @@ export default function OrderItem({ row }) {
             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
             <TableCell component="th" scope="row">
-                {row.orderId}
+                <Link to={"/order/" + row.orderId}>{row.orderId}</Link>
             </TableCell>
             <TableCell align="right">{row.status}</TableCell>
             <TableCell align="right">{row.shipId == null ? "Not Assigned": row.shipId}</TableCell>
