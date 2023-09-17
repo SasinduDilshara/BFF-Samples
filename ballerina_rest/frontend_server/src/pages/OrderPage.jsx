@@ -20,7 +20,6 @@ export default function OrderPage() {
 
     const [option1, setOption1] = useState('');
     const [option2, setOption2] = useState('');
-    const [orderId, setOrder] = useState('');
     const [filter, setFilter] = useState(false);
     
     const handleOption1Change = (e) => {
@@ -31,10 +30,6 @@ export default function OrderPage() {
       setOption2(e.target.value);
     };
 
-    const handleOrderId = (e) => {
-        setOrder(e.target.value);
-    };
-
     const changeFilter = () => {
         setFilter(!filter)
     }
@@ -43,7 +38,7 @@ export default function OrderPage() {
         const fetchData = async () => {
             setLoading(true);
             try {
-              const response = await getAPI(option1 != '' && option2 != '' ? getCustomerOrderUrl + "?customer=" + option1 + "&status="+option2: orderId != ''? getOrderUrl+"/"+orderId: getOrderUrl);
+              const response = await getAPI(option1 != '' && option2 != '' ? getCustomerOrderUrl + "?customer=" + option1 + "&status="+option2: getOrderUrl);
               setLoading(false);
               if (response.status !== 200) {
                 setError(response.message);
@@ -79,15 +74,6 @@ export default function OrderPage() {
           <option value="RETURNED">RETURNED</option>
         </select>
         <button onClick={changeFilter}>Filter</button>
-        <p> filter your results based on order id</p>
-        <div className="dropdown-container">
-        <TextField
-            label="Order ID"
-            value={orderId}
-            onChange={handleOrderId}
-          />
-        </div>
-        <button onClick={changeFilter}>Filter</button>
       </div>
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -102,11 +88,10 @@ export default function OrderPage() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    { orderId==''?
+                    {
                     data.map((row) => (
                         <OrderItem row={row} />
-                    )):
-                    <OrderItem row={data} />
+                    ))
                     }
                 </TableBody>
             </Table>
