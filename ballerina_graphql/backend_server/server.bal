@@ -1,5 +1,23 @@
 import ballerina/graphql;
 
+type Order record {|
+    readonly string orderId;
+    string customerId;
+    string? shipId;
+    Address? shippingAddress;
+    string date;
+    OrderStatus status;
+    int quantity;
+    string item;
+|};
+
+type Address record {|
+    string number;
+    string street;
+    string city;
+    string state;
+|};
+
 @graphql:ServiceConfig {
     cors: {
         allowOrigins: ["*"]
