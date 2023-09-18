@@ -28,7 +28,12 @@ listener http:Listener cargowaveListner = check new (9094);
 }
 
 service / on cargowaveListner {
-    resource function post submit() returns error? {
+    resource function post shipments() returns http:Accepted {
         log:printInfo("New cargo was successfully register to the megaport");
+        return {
+            body: {
+                message: "New cargo was successfully register to the megaport"
+            }
+        };
     }
 }

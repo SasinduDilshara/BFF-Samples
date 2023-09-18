@@ -1,96 +1,63 @@
-import ballerina/log;
 import ballerina/http;
+import ballerina/log;
+
 import ballerina_microservices_jwt_asgardio.cargoWave as _;
+import ballerina_microservices_jwt_asgardio.tradeLogix as _;
+import ballerina_microservices_jwt_asgardio.shipEx as _; 
 
 configurable string issuer = ?;
 configurable string audience = ?;
 configurable string jwksUrl = ?;
-configurable string clientId = ?;
 configurable string clientSecret = ?;
+configurable string cargoWaveUrl = ?;
+configurable string shipExUrl = ?;
+configurable string tradeLogixUrl = ?;
 
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["*"]
-    },
-    auth: [
-        {
-            jwtValidatorConfig: {
-                issuer: issuer,
-                audience: audience,
-                signatureConfig: {
-                    jwksConfig: {
-                        url: jwksUrl
-                    }
-                }
-            },
-            scopes: ["cargo_insert", "cargo_read"]
-        }
-    ]
-}
-service /sales on new http:Listener(9090) {
-    @http:ResourceConfig {
-        auth: {
-            scopes: ["order_insert"]
-        }
     }
-    // Add a new order by posting a JSON payload
-    resource function post 'cargos(Cargo cargo) returns http:Ok|http:BadRequest {
+}
+service /logistics on new http:Listener(9090) {
+    resource function post cargos(Cargo cargo) returns http:InternalServerError|error|http:Ok {
         cargoTable.push(cargo);
-        error? e = informCargoPartners(cargo.cargoId);
-        if e is error {
-            log:printError("Error message: " + e.message(), e);
-            http:BadRequest res = {
-                body: {message: string `Error while informing cargo partners ${e.message()}`}
+        do {
+            string url = cargo.'type == SHIPEX ? shipExUrl 
+                : cargo.'type == CARGO_WAVE ? cargoWaveUrl : tradeLogixUrl;
+            log:printInfo("Shipment request response status code is " + url);
+            http:Client serviceClient = check new (url, auth = {
+                tokenUrl: issuer,
+                clientId: audience,
+                clientSecret: clientSecret
+            // }, 
+            // secureSocket = {
+            //     key: {
+            //         certFile: "../resource/path/to/public.crt",
+            //         keyFile: "../resource/path/to/private.key"
+            //     },
+            //     cert: "./resources/public.cer"
+            });
+            http:Response|http:ClientError serviceClientResponse = serviceClient->post("/shipments", cargo);
+            if serviceClientResponse is http:Response && serviceClientResponse.statusCode == 202 {
+                http:Ok res = {
+                    body: "Successfully submitted the shipment request"
+                };
+                return res;    
+            } else {
+                fail error ("Shipment processing failed.");   
+            }
+        } on fail error e {
+            string errMsg = "Failed to submit the shipment request. " + e.message();
+            log:printError(errMsg);
+            http:InternalServerError res = {
+                body: {message: errMsg}
             };
             return res;
         }
-        http:Ok res = {
-            body: "Successfully submitted the cargo"
-        };
-        return res;
-    };
-
-    @http:ResourceConfig {
-        auth: {
-            scopes: ["order_insert", "order_read"]
-        }
+        return error("Internal server error occurred.");
     }
-    // Get all Cargos. Example: http://localhost:9090/sales/cargos
+
     resource function get cargos() returns Cargo[] {
         return cargoTable;
     };
-}
-
-function informCargoPartners(string insertedCargoId) returns error? {
-    string url;
-    Cargo cargo = check getCargoById(insertedCargoId);
-    if cargo.'type == CARGO_WAVE {
-        url = cargowaveListnerUrl;
-    } else if cargo.'type == SHIPEX {
-        url = shipexListnerUrl;
-    } else {
-        url = tradelogixListnerUrl;
-    }
-
-    http:Client 'client = check new (url, auth = {
-        tokenUrl: issuer,
-        clientId: clientId,
-        clientSecret: clientSecret,
-        clientConfig: {
-            secureSocket: {
-                cert: "./resources/public.cer"
-            }
-        }
-    }, secureSocket = {
-        cert: "./resources/public.cer"
-    });
-    // http:Client 'client = check new (url);
-    http:Response|error res = 'client->post("/submit", cargo);
-    if res is http:Response {
-        if res.statusCode == 202 {
-            return ();
-        }
-        log:printDebug("Error while informing cargo partners" + res.statusCode.toBalString() + res.reasonPhrase.toString());
-        return error("Error while informing cargo partners" + res.statusCode.toBalString() + res.reasonPhrase.toString());
-    }
 }

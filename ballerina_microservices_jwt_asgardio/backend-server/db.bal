@@ -1,33 +1,4 @@
 public Cargo[] cargoTable = [
-    {
-        cargoId: "61588cd7-9fae-424a-b24d-972fe0000123",
-        eta: "2023/12/12",
-        status: DOCKED,
-        lat: "1.23444",
-        lon: "79.1223",
-        'type: CARGO_WAVE,
-        startFrom: "Washington",
-        endFrom: "Mexico",
-        volume: "78.23"
-    },
-    {
-        cargoId: "766f0a2d-7bf6-4f19-8585-219f397b08aa",
-        eta: "2023/11/12",
-        status: COMPLETED,
-        lat: "1.3322",
-        lon: "79.1224",
-        'type: TRADE_LOGIX,
-        startFrom: "California",
-        endFrom: "London",
-        volume: "203.21"
-    }
+    {cargoId: "SP-124", status: DEPARTED, lat: "1.2312", lon: "72.1110", startFrom: "London", endFrom: "Washington", 'type: SHIPEX},
+    {cargoId: "SP-73", status: IN_TRANSIT, lat: "1.1110", lon: "72.1110", startFrom: "Melbourne", endFrom: "Sydney", 'type: CARGO_WAVE}
 ];
-
-public function getCargoById(string cargoId) returns Cargo|error {
-    foreach Cargo cargo in cargoTable {
-        if (cargo.cargoId == cargoId) {
-            return cargo;
-        }
-    }
-    return error("No cargo found for given id: " + cargoId);
-}
