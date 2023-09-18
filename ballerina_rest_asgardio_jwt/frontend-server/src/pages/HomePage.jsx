@@ -19,7 +19,6 @@ function GuestHomePage() {
 
     return <React.Fragment>
           <CustomButton color="primary" onClick={() => signIn()} disabled={false} label={"Log In"} size={'large'}/>
-          <CustomButton color="primary" onClick={() => signIn()} disabled={false} label={"Register"} size={'large'}/>
       </React.Fragment>
 }
 
