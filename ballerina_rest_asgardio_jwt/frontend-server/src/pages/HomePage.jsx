@@ -25,7 +25,6 @@ function GuestHomePage() {
 function LoggedUserHomePage() {
     const { signOut } = useAuthContext();
     const navigate = useNavigate();
-    const { state } = useAuthContext();
 
     const logout = () => {
       try {

@@ -1,4 +1,3 @@
-import ballerina/log;
 import ballerina/http;
 
 @http:ServiceConfig {
@@ -7,19 +6,13 @@ import ballerina/http;
     }
 }
 service /sales on new http:Listener(9090) {
-
     function init() {
-        string[]|error submitCargoResult = sClient->/cargos.post([
-            sampleCargo
-        ]);
-
-        if (submitCargoResult is error) {
-            log:printInfo(submitCargoResult.message());
-        }
+        addCargos();
     }
 
     // Add a new order by posting a JSON payload
     resource function post orders(Order 'order) returns http:Ok|http:BadRequest {
+        'order.cargoId = assignCargoId();
         string[]|error submitOrderResult = sClient->/orders.post(['order]);
         if submitOrderResult is string[] {
             http:Ok res = {};
