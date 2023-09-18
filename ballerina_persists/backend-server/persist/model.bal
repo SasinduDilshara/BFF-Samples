@@ -16,7 +16,7 @@ public type Cargo record {|
     string lon;
     string startFrom;
     string endFrom;
-    Order? 'order;
+    Order[] 'order;
     CargoType 'type;
 |};
 
