@@ -7,22 +7,28 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import OrderItem from '../components/OrderItem';
-import { getOrderUrl } from '../api/Constants';
+import {getOrderUrl } from '../api/Constants';
 import { getAPI } from '../api/ApiHandler';
+import { useParams } from 'react-router-dom';
 
-export default function OrderPage() {
+export default function ViewOrder(props) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [data, setData] = useState([]);
+    const params = useParams()
 
     useEffect (() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-              const response = await getAPI(getOrderUrl);
+              const response = await getAPI(getOrderUrl + "?id=" + params.id);
               setLoading(false);
-              setError(null);
-              setData(response.data);
+              if (response.status !== 200) {
+                setError(response.message);
+              } else {
+                setError(null);
+                setData(response.data);
+              }
             } catch (error) {
               setError(error);
               setLoading(false);
@@ -33,7 +39,7 @@ export default function OrderPage() {
 
     return (
         loading ? <div>Loading...</div> :
-        error != null ? <div>{"Error"}</div> :
+        error != null ? <div>{error}</div> :
         <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
@@ -47,9 +53,7 @@ export default function OrderPage() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {data.map((row) => (
-                        <OrderItem row={row} />
-                    ))}
+                        <OrderItem row={data} />
                 </TableBody>
             </Table>
         </TableContainer>
