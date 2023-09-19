@@ -23,7 +23,9 @@ export default function OrderPage() {
                         <TableCell>Order Id</TableCell>
                         <TableCell align="right">Status</TableCell>
                         <TableCell align="right">ShipId</TableCell>
-                        <TableCell align="right">Estimated Time Arrival</TableCell>
+                        <TableCell align="right">Item</TableCell>
+                        <TableCell align="right">Quantity</TableCell>
+                        <TableCell align="right">City</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>

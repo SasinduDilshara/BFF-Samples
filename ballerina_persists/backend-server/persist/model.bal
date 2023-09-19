@@ -1,22 +1,23 @@
 import ballerina/persist as _;
 
-public type OrderRecord record {|
+public type Order record {|
     readonly string orderId;
     string customerId;
-    float totalAmount;
-    string? shipId;
     string date;
-    string eta;
     OrderStatus status;
 	Cargo cargo;
+    int quantity;
+    string item;
 |};
 
 public type Cargo record {|
     readonly string id;
-    string? eta;
     string lat;
     string lon;
-    OrderRecord? 'order;
+    string startFrom;
+    string endFrom;
+    Order[] 'order;
+    CargoType 'type;
 |};
 
 public enum OrderStatus {

@@ -53,7 +53,8 @@ service /logistics on new http:Listener(9090) {
             scopes: ["order_insert", "order_read"]
         }
     }
-    resource function get getAllCargos() returns Cargo[] {
+    // Get all Cargos. Example: http://localhost:9090/sales/cargos
+    resource function get cargos() returns Cargo[] {
         return cargoTable;
     };
 }

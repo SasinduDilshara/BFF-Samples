@@ -43,11 +43,9 @@ export default function CargoPage() {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Cargo Id</TableCell>
-                                <TableCell align="right">Estimated Time</TableCell>
                                 <TableCell align="right">startFrom</TableCell>
-                                <TableCell align="right">volume Time Arrival</TableCell>
                                 <TableCell align="right">End From</TableCell>
-                                <TableCell align="right">Location</TableCell>
+                                <TableCell align="right">Status</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

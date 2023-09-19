@@ -10,4 +10,8 @@ map<Location[]> vehicleLocations = {
     V121: [{latitude: 37.7749, longitude: -242.4194}, {latitude: 45.0522, longitude: -150.2437},
         {latitude: 40.7128, longitude: -74.0060}, {latitude: 502.5074, longitude: -0.1278},
         {latitude: -33.8688, longitude: 140.2093}]
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> sasindu/dev

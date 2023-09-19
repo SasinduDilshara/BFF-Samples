@@ -12,11 +12,9 @@ export default function CargoItem({ row }) {
             <TableCell component="th" scope="row">
                 {row.cargoId}
             </TableCell>
-            <TableCell align="right">{row.eta == null? "Not Estimated yet!" : row.eta}</TableCell>
             <TableCell align="right">{row.startFrom}</TableCell>
-            <TableCell align="right">{row.volume}</TableCell>
             <TableCell align="right">{row.endFrom}</TableCell>
-            <TableCell align="right">{message == "" || message == null ? "---" : message}</TableCell>
+            <TableCell align="right">{row.status}</TableCell>
         </TableRow>
     );
 }

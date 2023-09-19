@@ -1,0 +1,17 @@
+# Configuration file for "ballerina_microservices_jwt_asgardio"
+# How to use see:
+# https://ballerina.io/learn/configure-ballerina-programs/provide-values-to-configurable-variables/#provide-via-toml-syntax
+
+
+cargoWaveUrl = ""	# Type of STRING
+
+issuer = ""	# Type of STRING
+
+audience = ""	# Type of STRING
+
+jwksUrl = ""	# Type of STRING
+
+clientId = ""	# Type of STRING
+
+clientSecret = ""	# Type of STRING
+

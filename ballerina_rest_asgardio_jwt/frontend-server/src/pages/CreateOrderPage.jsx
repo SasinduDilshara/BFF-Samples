@@ -13,16 +13,28 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '@asgardeo/auth-react';
 
 const CreateOrderPage = () => {
-  const [date, setDate] = useState('');
-  const [eta, setEstimationTime] = useState('');
+  const [item, setItem] = useState('');
+  const [quantity, setQuantity] = useState('');
   const [customerId, setUsername] = useState('');
   const [error, setError] = useState(false);
   const navigate = useNavigate();
-  const {getAccessToken} = useAuthContext();
+  const { getAccessToken } = useAuthContext();
+
+  const createID = () => {
+    const min = 100; // Minimum value (inclusive)
+    const max = 999; // Maximum value (inclusive)
+    const random = Math.floor(Math.random() * (max - min + 1)) + min;
+    return "HM-" + random.toString();
+  }
+
+  const createdDate = () => {
+    var today = new Date();
+    return today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+  }
 
   const handleSubmit = async event => {
     event.preventDefault();
-    const response = await postAPI(submitOrderUrl, { date, eta, customerId, totalAmount: 0, status: 'PENDING', shipId: null, orderId: uuidv4() }, { headers: { "Authorization": `Bearer ${await getAccessToken()}` } });
+    const response = await postAPI(submitOrderUrl, { item, quantity: parseInt(quantity), customerId, status: 'PENDING', shipId: null, orderId: createID(), date: createdDate() }, { headers: { "Authorization": `Bearer ${await getAccessToken()}` } });
     if (response.error) {
       setError(true);
     } else {
@@ -42,10 +54,9 @@ const CreateOrderPage = () => {
             <TextField
               fullWidth
               margin="normal"
-              label="Date"
-              type="date"
-              value={date}
-              onChange={e => setDate(e.target.value)}
+              label="Item name"
+              value={item}
+              onChange={e => setItem(e.target.value)}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -53,13 +64,10 @@ const CreateOrderPage = () => {
             <TextField
               fullWidth
               margin="normal"
-              label="Estimation Time Arrival"
-              type="time"
-              value={eta}
-              onChange={e => setEstimationTime(e.target.value)}
-              InputLabelProps={{
-                shrink: true,
-              }}
+              label="Quantity"
+              value={quantity}
+              type='number'
+              onChange={e => setQuantity(e.target.value)}
             />
             <TextField
               fullWidth

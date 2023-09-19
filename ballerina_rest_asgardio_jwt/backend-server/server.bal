@@ -24,12 +24,12 @@ configurable string jwksUrl = ?;
     ]
 }
 service /sales on new http:Listener(9090) {
+    // "order_insert" scope is required to invoke this resource
     @http:ResourceConfig {
         auth: {
             scopes: ["order_insert"]
         }
     }
-    // Add a new order by posting a JSON payload
     resource function post orders(Order 'orders) returns http:Ok {
         orderTable.push('orders);
         http:Ok res = {
@@ -40,12 +40,12 @@ service /sales on new http:Listener(9090) {
         return res;
     };
 
+    // Either "order_insert" or "order_read" scope is required to invoke this resource
     @http:ResourceConfig {
         auth: {
             scopes: ["order_read", "order_insert"]
         }
     }
-    // Get all orders. Example: http://localhost:9090/sales/orders
     resource function get orders() returns Order[] {
         return orderTable;
     };
