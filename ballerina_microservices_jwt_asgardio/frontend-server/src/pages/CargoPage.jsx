@@ -15,12 +15,14 @@ export default function CargoPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [data, setData] = useState([]);
-    const {getAccessToken} = useAuthContext();
+    const {getAccessToken, getBasicUserInfo, getDecodedIDToken} = useAuthContext();
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
+                console.log("User Info: ", await getBasicUserInfo());
+                console.log("Decoded User Info: ", await getDecodedIDToken());
                 const response = await getAPI(getCargoUrl, { headers: { "Authorization": `Bearer ${await getAccessToken()}` } });
                 setLoading(false);
                 setError(null);
@@ -41,11 +43,9 @@ export default function CargoPage() {
                         <TableHead>
                             <TableRow>
                                 <TableCell>Cargo Id</TableCell>
-                                <TableCell align="right">Estimated Time</TableCell>
                                 <TableCell align="right">startFrom</TableCell>
-                                <TableCell align="right">volume Time Arrival</TableCell>
                                 <TableCell align="right">End From</TableCell>
-                                <TableCell align="right">Location</TableCell>
+                                <TableCell align="right">Status</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>

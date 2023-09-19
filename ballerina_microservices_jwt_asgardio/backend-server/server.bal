@@ -1,5 +1,5 @@
-import ballerina/log;
 import ballerina/http;
+import ballerina/log;
 
 configurable string cargoWaveUrl = ?;
 configurable string issuer = ?;
@@ -7,6 +7,8 @@ configurable string audience = ?;
 configurable string jwksUrl = ?;
 configurable string clientId = ?;
 configurable string clientSecret = ?;
+configurable string shipExUrl = ?;
+configurable string tradeLogixUrl = ?;
 
 @http:ServiceConfig {
     cors: {
@@ -53,42 +55,8 @@ service /logistics on new http:Listener(9090) {
             scopes: ["order_insert", "order_read"]
         }
     }
-    // Get all Cargos. Example: http://localhost:9090/sales/cargos
+
     resource function get cargos() returns Cargo[] {
         return cargoTable;
     };
-}
-
-function informCargoPartners(string insertedCargoId) returns error? {
-    string url;
-    Cargo cargo = check getCargoById(insertedCargoId);
-    if cargo.'type == CARGO_WAVE {
-        url = cargowaveListnerUrl;
-    } else if cargo.'type == SHIPEX {
-        url = shipexListnerUrl;
-    } else {
-        url = tradelogixListnerUrl;
-    }
-
-    http:Client 'client = check new (url, auth = {
-        tokenUrl: issuer,
-        clientId: clientId,
-        clientSecret: clientSecret,
-        clientConfig: {
-            secureSocket: {
-                cert: "./resources/public.cer"
-            }
-        }
-    }, secureSocket = {
-        cert: "./resources/public.cer"
-    });
-    // http:Client 'client = check new (url);
-    http:Response|error res = 'client->post("/submit", cargo);
-    if res is http:Response {
-        if res.statusCode == 202 {
-            return ();
-        }
-        log:printDebug("Error while informing cargo partners" + res.statusCode.toBalString() + res.reasonPhrase.toString());
-        return error("Error while informing cargo partners" + res.statusCode.toBalString() + res.reasonPhrase.toString());
-    }
 }

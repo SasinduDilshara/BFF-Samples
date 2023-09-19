@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Typography,
   TextField,
@@ -8,7 +8,6 @@ import {
 } from '@mui/material';
 import { postAPI } from '../api/ApiHandler';
 import { submitOrderUrl } from '../api/Constants';
-import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 
 const CreateOrderPage = () => {
@@ -32,7 +31,7 @@ const CreateOrderPage = () => {
 
   const handleSubmit = async event => {
     event.preventDefault();
-    const response = await postAPI(submitOrderUrl, { date: createdDate(), item, customerId, status: 'PENDING', cargoId: "S-224", orderId: createID(), quantity: parseInt(quantity) });
+    const response = await postAPI(submitOrderUrl, { date: createdDate(), item, customerId, status: 'PENDING', cargoId: "Not Assigned", orderId: createID(), quantity: parseInt(quantity) });
     try {
       if (response.error) {
         setError(true);

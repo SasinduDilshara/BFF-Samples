@@ -22,6 +22,7 @@ const CreateCargoPage = () => {
   const [endFrom, setEndFrom] = useState('');
   const navigate = useNavigate();
   const [error, setError] = useState(false);
+  const [errorMessage, setErrMessage] = useState("");
   const { getAccessToken } = useAuthContext();
 
   const createCargoId = () => {
@@ -33,18 +34,24 @@ const CreateCargoPage = () => {
 
   const handleSubmit = async event => {
     event.preventDefault();
-    const response = await postAPI(submitCargoUrl, { type, startFrom, endFrom, cargoId: createCargoId(), status: 'DOCKED', lat: "-", lon: "-"}, {headers: {"Authorization" : `Bearer ${await getAccessToken()}`}}
-    );
-    if (response.error) {
+    try {
+      const response = await postAPI(submitCargoUrl, { type, startFrom, endFrom, cargoId: createCargoId(), status: 'DOCKED', lat: "-", lon: "-"}, {headers: {"Authorization" : `Bearer ${await getAccessToken()}`}}
+      );
+      if (response.error) {
+        setError(true);
+        setErrMessage(error.message);
+      } else {
+        setError(false);
+        navigate('/cargos');
+      }
+    } catch (error) {
       setError(true);
-    } else {
-      setError(false);
-      navigate('/cargos');
+      setErrMessage(error.data.message);
     }
   };
 
   return (
-    error? <div>Something went wrong</div> :
+    error? <div>{errorMessage}</div> :
     <Container component="main" maxWidth="xs">
       <Paper elevation={3} style={{ padding: '20px' }}>
         <Typography variant="h5" align="center">

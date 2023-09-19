@@ -1,7 +1,7 @@
 import ballerina/log;
 import ballerina/http;
 
-listener http:Listener shipexListner = check new(9092);
+listener http:Listener shipexListner = check new (9092);
 
 @http:ServiceConfig {
     cors: {
@@ -9,7 +9,12 @@ listener http:Listener shipexListner = check new(9092);
     }
 }
 service / on shipexListner {
-    resource function post submit() {
+    resource function post shipments() returns http:Accepted {
         log:printInfo("New cargo was successfully register to the megaport");
+        return {
+            body: {
+                message: "New cargo was successfully register to the megaport"
+            }
+        };
     }
 }

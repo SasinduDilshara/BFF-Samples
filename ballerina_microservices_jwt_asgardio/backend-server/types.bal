@@ -1,4 +1,4 @@
-public enum CargoStatus {
+public enum ShipStatus {
     DOCKED,
     DEPARTED,
     IN_TRANSIT,
@@ -6,20 +6,18 @@ public enum CargoStatus {
     CANCELED
 };
 
+public type Cargo record {|
+    readonly string cargoId;
+    ShipStatus status;
+    string lat;
+    string lon;
+    string startFrom;
+    string? endFrom;
+    CargoType 'type;
+|};
+
 public enum CargoType {
     SHIPEX = "ShipEx",
     CARGO_WAVE = "CargoWave",
     TRADE_LOGIX = "TradeLogix"
 };
-
-public type Cargo record {|
-    readonly string cargoId;
-    string? eta;
-    CargoStatus status;
-    string lat;
-    string lon;
-    CargoType 'type;
-    string startFrom;
-    string? endFrom;
-    string volume;
-|};
