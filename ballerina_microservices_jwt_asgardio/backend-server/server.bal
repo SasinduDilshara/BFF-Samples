@@ -29,13 +29,13 @@ service /logistics on new http:Listener(9090) {
                 tokenUrl: issuer,
                 clientId: audience,
                 clientSecret: clientSecret
-            // }, 
-            // secureSocket = {
-            //     key: {
-            //         certFile: "../resource/path/to/public.crt",
-            //         keyFile: "../resource/path/to/private.key"
-            //     },
-            //     cert: "./resources/public.cer"
+            }, 
+            secureSocket = {
+                key: {
+                    certFile: "../resource/path/to/public.crt",
+                    keyFile: "../resource/path/to/private.key"
+                },
+                cert: "./resources/public.cer"
             });
             http:Response|http:ClientError serviceClientResponse = serviceClient->post("/shipments", cargo);
             if serviceClientResponse is http:Response && serviceClientResponse.statusCode == 202 {
