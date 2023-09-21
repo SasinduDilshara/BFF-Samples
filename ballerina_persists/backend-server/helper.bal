@@ -34,7 +34,7 @@ function assignCargoId() returns string {
 }
 
 function addCargos() {
-        string[]|persist:Error results = sClient->/cargos.post(cargoArray);
+        string[]|persist:Error results = ordersDatabase->/cargos.post(cargoArray);
         if results is persist:Error {
             log:printError("Error occurred while adding cargos", results);
         }
