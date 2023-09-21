@@ -1,25 +1,12 @@
-public Order[] orderTable = [
-    {orderId: "HM-278", quantity: 5, item: "TV", customerId: "C-124", shipId: "S-8", date: "22-11-2023", status: PENDING},
-    {orderId: "HM-340", quantity: 3, item: "IPhone 14", customerId: "C-73", shipId: "S-32", date: "12-11-2023", status: DELIVERED}
+public CustomerRegistrationData[] customerTable = [
+    {firstName: "James", lastName: "Clerk", address: "123, Elm Street, New York", dependents: 2},
+    {firstName: "John", lastName: "Doe", address: "234, White street, Sydney", dependents: 6},
+    {firstName: "Anna", lastName: "Watson", address: "152, Green Avenue, London", dependents: 7}
 ];
 
 
-public function updateOrder(Order 'order) returns Order|error {
-    int index = 0;
-    foreach Order item in orderTable {
-        if item.orderId == 'order.orderId {
-            orderTable[index] = {
-                orderId: 'order.orderId,
-                customerId: 'order.customerId,
-                shipId: 'order.shipId,
-                date: 'order.date,
-                status: 'order.status,
-                quantity: 'order.quantity,
-                item: 'order.item
-            };
-            return 'order;
-        }
-        index = index + 1;
-    }
-    return error("Order not found");
-}
+// public CustomerRegistrationData[] customerTable = [
+//     {firstName: "James", lastName: "Clerk", address: "123, Elm Street, New York", dependents: "2"},
+//     {firstName: "John", lastName: "Doe", address: "234, White street, Sydney", dependents: "6"},
+//     {firstName: "Anna", lastName: "Watson", address: "152, Green Avenue, London", dependents: "7"}
+// ];

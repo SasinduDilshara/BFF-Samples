@@ -1,7 +1,7 @@
 import MagnifyingGlassIcon from '@heroicons/react/24/solid/MagnifyingGlassIcon';
 import { Card, InputAdornment, OutlinedInput, SvgIcon } from '@mui/material';
 
-export const OrdersSearch = ({onChange, customer}) => (
+export const CustomersSearch = ({onChange, customer}) => (
   <Card sx={{ p: 2 }}>
     <OutlinedInput
       fullWidth

@@ -1,9 +1,7 @@
 export const serverUrl = "http://localhost:9090";
 
 // POST requests
-export const submitOrderUrl = serverUrl + "/sales/orders";
+export const submitCustomersUrl = serverUrl + "/crm/customers";
 
-// GET requests
-export const getOrderUrl = serverUrl + "/sales/orders";
-
-export const getCustomerOrderUrl = serverUrl + "/sales/customerOrders"
+// GET requests";
+export const getCustomersUrl = serverUrl + "/crm/customers"

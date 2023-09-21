@@ -7,12 +7,11 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
 } from '@mui/material';
 import { Scrollbar } from 'src/components/scrollbar';
 
-export const OrdersTable = (props) => {
+export const CustomersTable = (props) => {
   const {
     items = [],
     handleClick,
@@ -29,52 +28,40 @@ export const OrdersTable = (props) => {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  ID
+                  First Name
                 </TableCell>
                 <TableCell>
-                  Status
+                  Last Name
                 </TableCell>
                 <TableCell>
-                  Ship
+                  Address
                 </TableCell>
                 <TableCell>
-                  Item
-                </TableCell>
-                <TableCell>
-                  Quantity
-                </TableCell>
-                <TableCell>
-                  Date
+                  Dependents
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {items.map((order) => {
+              {items.map((customer) => {
                 return (
                   <TableRow
                     hover
-                    key={order.orderId}
+                    key={customer.firstName}
                   >
                     <TableCell>
-                      {order.orderId}
+                      {customer.firstName}
                     </TableCell>
                     <TableCell>
-                      {order.status}
+                      {customer.lastName}
                     </TableCell>
                     <TableCell>
-                      {order.shipId != null ? order.shipId : "Not Assigned"}
+                      {customer.address}
                     </TableCell>
                     <TableCell>
-                      {order.item}
+                      {customer.dependents}
                     </TableCell>
                     <TableCell>
-                      {order.quantity}
-                    </TableCell>
-                    <TableCell>
-                      {order.date}
-                    </TableCell>
-                    <TableCell>
-                      <Button onClick={() => handleClick(order.orderId)}>View</Button>
+                      <Button onClick={() => handleClick(customer.customerId)}>View</Button>
                     </TableCell>
                   </TableRow>
                 );
@@ -87,7 +74,7 @@ export const OrdersTable = (props) => {
   );
 };
 
-OrdersTable.propTypes = {
+CustomersTable.propTypes = {
   count: PropTypes.number,
   items: PropTypes.array,
   handleClick: PropTypes.func,

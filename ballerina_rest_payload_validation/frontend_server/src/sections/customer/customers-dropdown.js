@@ -4,7 +4,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-export default function OrderSelect({handleChange, status}) {
+export default function CustomerSelect({handleChange, status}) {
   return (
     <div>
       <FormControl sx={{ p: 2, minWidth: 200, maxWidth: 500 }}>

@@ -2,32 +2,28 @@ import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
-import { OrdersTable } from 'src/sections/order/orders-table';
-import { OrdersSearch } from 'src/sections/order/orders-search';
-import OrderSelect from 'src/sections/order/orders-dropdown';
-import { getCustomerOrderUrl, getOrderUrl } from 'src/constants/Constants';
+import { CustomersTable } from 'src/sections/customer/customers-table';
+import { getCustomersUrl } from 'src/constants/Constants';
 import { getAPI } from 'src/api/ApiHandler';
-import SimpleDialog from 'src/sections/order/view-order';
+import SimpleDialog from 'src/sections/customer/view-customer';
 
 const Page = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState([]);
-  const [customer, setCustomer] = useState("");
-  const [status, setStatus] = useState("");
-  const [filter, setFilter] = useState(false);
   const [open, setOpen] = useState(false);
-  const [id, setId] = useState('');
-  const [order, setOrder] = useState('');
+  const [id, setId] = useState('123');
+  const [agreement, setAgreement] = useState('');
 
-  const fetchOrderData = async (orderId) => {
+  const fetchCustomerData = async (customerId) => {
     try {
-      const response = await getAPI(getOrderUrl + "?id=" + orderId);
+      const response = await getAPI(getCustomersUrl + "/" + customerId + "/agreement");
       if (response.status !== 200) {
         setError(response.message);
       } else {
         setError(null);
-        setOrder(response.data);
+        setAgreement(response.data);
+        console.log("Agreement : ", response.data);
       }
     } catch (error) {
       setError(error);
@@ -36,7 +32,7 @@ const Page = () => {
 
   const handleClickOpen = async (id) => {
     setId(id);
-    await fetchOrderData(id);
+    await fetchCustomerData(id);
     setOpen(true);
   };
 
@@ -47,7 +43,7 @@ const Page = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await getAPI(customer != '' && status != '' ? getCustomerOrderUrl + "?customer=" + customer + "&status=" + status: getOrderUrl);
+      const response = await getAPI(getCustomersUrl);
       if (response.status !== 200) {
         setError(response.message);
       } else {
@@ -64,33 +60,14 @@ const Page = () => {
 
   useEffect(() => {
     fetchData();
-    console.log(data)
-  }, [filter]);
-
-  useEffect(() => {
-
-  }, [data]);
-
-
-  const onSearchButtonClick = (e) => {
-    e.preventDefault();
-    setFilter(!filter);
-  }
-  
-  const onSearchChange = (e) => {
-    setCustomer(e.target.value);
-  }
-
-  const onStatusChange = (e) => {
-    setStatus(e.target.value);
-  }
+  }, []);
 
   return (
     loading ? <div>Loading...</div> : error != null ? <div>{error}</div> :
     <>
       <Head>
         <title>
-          Orders | MegaPort Kit
+          Customers | MegaPort Kit
         </title>
       </Head>
       <Box
@@ -109,7 +86,7 @@ const Page = () => {
             >
               <Stack spacing={1}>
                 <Typography variant="h4">
-                  Orders
+                  Customers
                 </Typography>
               </Stack>
               <div>
@@ -120,16 +97,16 @@ const Page = () => {
                     </SvgIcon>
                   )}
                   variant="contained"
-                  href='/create-order'
+                  href='/create-customer'
                 >
                   Add
                 </Button>
               </div>
             </Stack>
-            <OrdersTable
+            <CustomersTable
               count={data.length}
               items={data}
-              handleClick={handleClickOpen}
+              handleClick={() => handleClickOpen(id)}
               open={open}
             />
           </Stack>
@@ -138,7 +115,8 @@ const Page = () => {
           open={open}
           onClose={handleClose}
           id={id}
-          order={order}
+          agreement={agreement}
+          sx={{padding:"5rem"}}
       />
       </Box>
     </>
