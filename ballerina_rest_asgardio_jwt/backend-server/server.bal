@@ -24,6 +24,7 @@ configurable string jwksUrl = ?;
     ]
 }
 service /sales on new http:Listener(9090) {
+    // "order_insert" scope is required to invoke this resource
     @http:ResourceConfig {
         auth: {
             scopes: ["order_insert"]
@@ -41,6 +42,7 @@ service /sales on new http:Listener(9090) {
     };
 
     @http:ResourceConfig {
+        // Either "order_insert" or "order_read" scope is required to invoke this resource
         auth: {
             scopes: ["order_read", "order_insert"]
         }
