@@ -28,5 +28,35 @@ public Order[] orderTable = [
             city: "Springwood",
             state: "QLD"
         }
+    },
+    {
+        orderId: "HM-720", 
+        quantity: 3, 
+        item: "IPhone 15", 
+        customerId: "C-73", 
+        shipId: "S-8", 
+        date: "12-10-2023", 
+        status: DELIVERED,
+        shippingAddress: {
+            number: "167",
+            street: "Green Rd",
+            city: "Brisbane",
+            state: "QLD"
+        }
+    },
+    {
+        orderId: "HM-9300", 
+        quantity: 3, 
+        item: "IPhone 15 pro", 
+        customerId: "C-73", 
+        shipId: "S-20", 
+        date: "08-12-2023", 
+        status: SHIPPED,
+        shippingAddress: {
+            number: "13",
+            street: "Yellow Rd",
+            city: "Springwood",
+            state: "QLD"
+        }
     }
 ];
