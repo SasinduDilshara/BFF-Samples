@@ -84,7 +84,15 @@ service /sales on new http:Listener(9090) {
         }
     }
     // Get cargo by ID. Example: http://localhost:9090/sales/cargos/SP-124
-    resource function get cargos/[string id]() returns Cargo[] {
-        return cargoTable;
+    resource function get cargos/[string id]() returns Cargo|http:NotFound {
+        foreach Cargo cargo in cargoTable {
+            if cargo.cargoId == id {
+                return cargo;
+            }
+        }
+        http:NotFound res = {
+            body: "Cargo not found. Cargo ID: " + id
+        };
+        return res;
     };
 }
