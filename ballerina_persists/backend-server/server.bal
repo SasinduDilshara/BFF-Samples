@@ -47,6 +47,7 @@ service /sales on new http:Listener(9090) {
         return res;
     };
 
+
     // Get all orders with the given 'cargoId' sorted by 'quantity'
     resource function get cargoOrders(string cargoId) returns Order[]|error {
         return from Order 'order in ordersDatabase->/orders(targetType = Order)
