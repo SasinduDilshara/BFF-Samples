@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from "@asgardeo/auth-react";
 import CustomButton from '../components/CustomButton';
+import CargoPage from './CargoPage';
 
 export default function HomePage() {
   const { state } = useAuthContext();
@@ -10,7 +11,7 @@ export default function HomePage() {
     !state.isAuthenticated ?
       <GuestHomePage/>
       :
-      <LoggedUserHomePage/>
+      <CargoPage />
   );
 }
 
@@ -19,25 +20,5 @@ function GuestHomePage() {
 
     return <React.Fragment>
           <CustomButton color="primary" onClick={() => signIn()} disabled={false} label={"Log In"} size={'large'}/>
-          <CustomButton color="primary" onClick={() => signIn()} disabled={false} label={"Register"} size={'large'}/>
       </React.Fragment>
-}
-
-function LoggedUserHomePage() {
-    const { signOut } = useAuthContext();
-    const navigate = useNavigate();
-
-    const logout = () => {
-      try {
-        signOut();
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-  return <React.Fragment>
-        <CustomButton color="primary" onClick={() => logout()} disabled={false} label={"Log Out"} size={'large'}/>
-        <CustomButton color="primary" onClick={() => {navigate("/cargos")}} disabled={false} label={"cargo"} size={'large'}/>
-        <CustomButton color="primary" onClick={() => {navigate("/create-cargo")}} disabled={false} label={"Submit a Cargo"} size={'large'}/>
-    </React.Fragment >
 }

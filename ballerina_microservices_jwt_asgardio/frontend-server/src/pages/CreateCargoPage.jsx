@@ -1,29 +1,39 @@
-import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import {
-  Typography,
-  TextField,
+  Box,
   Button,
-  Container,
-  Paper,
   FormControl,
   InputLabel,
-  Select,
   MenuItem,
+  Select,
+  Stack,
+  TextField,
+  SvgIcon,
+  Typography
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { useAuthContext } from "@asgardeo/auth-react";
-import { submitCargoUrl } from '../api/Constants';
+import { useState } from 'react';
 import { postAPI } from '../api/ApiHandler';
+import { submitCargoUrl } from '../api/Constants';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import LogoutIcon from '@mui/icons-material/Logout';
+import { useAuthContext } from "@asgardeo/auth-react";
 
-
-const CreateCargoPage = () => {
-  const [type, setType] = useState('');
-  const [startFrom, setStartFrom] = useState('');
-  const [endFrom, setEndFrom] = useState('');
+const Page = () => {
   const navigate = useNavigate();
-  const [error, setError] = useState(false);
-  const [errorMessage, setErrMessage] = useState("");
-  const { getAccessToken } = useAuthContext();
+  const [error, setError] = useState(null);
+  const { signOut, getAccessToken } = useAuthContext();
+
+  const logout = () => {
+    try {
+      signOut();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const createCargoId = () => {
     const min = 100; // Minimum value (inclusive)
@@ -32,65 +42,187 @@ const CreateCargoPage = () => {
     return "S-" + random.toString();
   }
 
-  const handleSubmit = async event => {
-    event.preventDefault();
-    try {
-      const response = await postAPI(submitCargoUrl, { type, startFrom, endFrom, cargoId: createCargoId(), status: 'DOCKED', lat: "-", lon: "-"}, {headers: {"Authorization" : `Bearer ${await getAccessToken()}`}}
-      );
-      if (response.error) {
-        setError(true);
-        setErrMessage(error.message);
-      } else {
-        setError(false);
-        navigate('/cargos');
+  function getRandomInRange(from, to, fixed) {
+    return (Math.random() * (to - from) + from).toFixed(fixed) * 1;
+  }
+
+  const formik = useFormik({
+    initialValues: {
+      startFrom: '',
+      endFrom: '',
+      type: ''
+    },
+    validationSchema: Yup.object({
+      startFrom: Yup
+        .string("Must be a string")
+        .max(255)
+        .required('Item is required'),
+      endFrom: Yup
+        .string("Must be a string")
+        .max(255)
+        .required('Item is required'),
+      type: Yup
+        .string("Must be a string")
+        .max(255)
+        .required('Item is required'),
+    }),
+    onSubmit: async ({ type, startFrom, endFrom }, helpers) => {
+      console.log("Values", { type, startFrom, endFrom });
+      try {
+        const response = await postAPI(submitCargoUrl, { type, startFrom, endFrom, cargoId: createCargoId(), status: 'DOCKED', lat: getRandomInRange().toString(), lon: getRandomInRange().toString() }, {
+          headers:
+          {
+              "Authorization": `Bearer ${await getAccessToken()}`
+          }
+          });
+        if (response.error) {
+          console.log("Error1", response.error)
+          setError(true);
+          console.log(response.error)
+        } else {
+          setError(null);
+          navigate('/cargos');
+        }
+      } catch (err) {
+        console.log("Error2", err)
+        console.log("Err", err)
+        helpers.setStatus({ success: false });
+        helpers.setErrors({ submit: err.message });
+        helpers.setSubmitting(false);
       }
-    } catch (error) {
-      setError(true);
-      setErrMessage(error.data.message);
     }
-  };
+  });
 
   return (
-    error? <div>{errorMessage}</div> :
-    <Container component="main" maxWidth="xs">
-      <Paper elevation={3} style={{ padding: '20px' }}>
-        <Typography variant="h5" align="center">
-          Create New Cargo
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <FormControl fullWidth margin="normal" required>
-            <InputLabel>Type</InputLabel>
-            <Select
-              value={type}
-              onChange={e => setType(e.target.value)}
-            >
-              <MenuItem value="ShipEx">ShipEx</MenuItem>
-              <MenuItem value="CargoWave">CargoWave</MenuItem>
-              <MenuItem value="TradeLogix">TradeLogix</MenuItem>
-            </Select>
-          </FormControl>
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Start From"
-            value={startFrom}
-            onChange={e => setStartFrom(e.target.value)}
-            required
-          />
-          <TextField
-            fullWidth
-            margin="normal"
-            label="End From"
-            value={endFrom}
-            onChange={e => setEndFrom(e.target.value)}
-          />
-          <Button type="submit" fullWidth variant="contained" color="primary">
-            Create Cargo
-          </Button>
-        </form>
-      </Paper>
-    </Container>
+    error != null ? <div>Something went wrong</div> :
+      <>
+        <Box
+          sx={{
+            backgroundColor: 'background.paper',
+            flex: '1 1 auto',
+            alignItems: 'center',
+            display: 'flex',
+            justifyContent: 'center'
+          }}
+        >
+          <Stack>
+              <div>
+                <Button
+                  startIcon={(
+                    <SvgIcon fontSize="small">
+                      < LocalShippingIcon />
+                    </SvgIcon>
+                  )}
+                  style={{ paddingLeft: 20 }}
+                  href='/cargos'
+                >
+                  View Cargo
+                </Button>
+                <Button
+                  startIcon={(
+                    <SvgIcon fontSize="small">
+                      < LogoutIcon />
+                    </SvgIcon>
+                  )}
+                  onClick={() => logout()}
+                  style={{ paddingLeft: 20 }}
+                >
+                  Sign Out
+                </Button>
+              </div>
+          <Box
+            sx={{
+              maxWidth: 550,
+              px: 3,
+              py: '100px',
+              width: '100%'
+            }}
+          >
+              <Typography variant="h4">
+                Create a new Cargo
+              </Typography>
+              <Box
+                sx={{
+                  py: '20px'
+                }}
+              />
+              <div>
+                <form
+                  onSubmit={formik.handleSubmit}
+                >
+                  <Stack spacing={3}>
+                    <TextField
+                      error={!!(formik.touched.item && formik.errors.item)}
+                      fullWidth
+                      helperText={formik.touched.item && formik.errors.item}
+                      label="Start From"
+                      name="startFrom"
+                      onBlur={formik.handleBlur}
+                      onChange={formik.handleChange}
+                      value={formik.values.startFrom}
+                    />
+                    <TextField
+                      error={!!(formik.touched.quantity && formik.errors.quantity)}
+                      fullWidth
+                      helperText={formik.touched.quantity && formik.errors.quantity}
+                      label="Destination"
+                      name="endFrom"
+                      onBlur={formik.handleBlur}
+                      onChange={formik.handleChange}
+                      value={formik.values.endFrom}
+                    />
+                    <FormControl fullWidth margin="normal" required>
+                      <InputLabel>Type</InputLabel>
+                      <Select
+                        error={!!(formik.touched.quantity && formik.errors.quantity)}
+                        fullWidth
+                        helperText={formik.touched.quantity && formik.errors.quantity}
+                        label="Type"
+                        name="type"
+                        onBlur={formik.handleBlur}
+                        onChange={formik.handleChange}
+                        value={formik.values.type}
+                      >
+                        <MenuItem value="ShipEx">ShipEx</MenuItem>
+                        <MenuItem value="CargoWave">CargoWave</MenuItem>
+                        <MenuItem value="TradeLogix">TradeLogix</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Stack>
+                  {formik.errors.submit && (
+                    <Typography
+                      color="error"
+                      sx={{ mt: 3 }}
+                      variant="body2"
+                    >
+                      {formik.errors.submit}
+                    </Typography>
+                  )}
+                  <Button
+                    fullWidth
+                    size="large"
+                    sx={{ mt: 3 }}
+                    type="submit"
+                    variant="contained"
+                  >
+                    Submit
+                  </Button>
+                  <Button
+                    fullWidth
+                    size="large"
+                    sx={{ mt: 3 }}
+                    onClick={() => { }}
+                  >
+                    Back
+                  </Button>
+                </form>
+              </div>
+          </Box>
+
+          </Stack>
+        </Box>
+      </>
   );
 };
 
-export default CreateCargoPage;
+export default Page;

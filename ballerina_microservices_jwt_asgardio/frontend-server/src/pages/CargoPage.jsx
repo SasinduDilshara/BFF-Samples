@@ -1,59 +1,122 @@
-import React, { useEffect, useState } from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import { useEffect, useState } from 'react';
+import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
+import { CargosTable } from '../sections/cargo/cargo-table';
 import { getCargoUrl } from '../api/Constants';
 import { getAPI } from '../api/ApiHandler';
-import CargoItem from '../components/CargoItem';
-import { useAuthContext } from '@asgardeo/auth-react';
+import SimpleDialog from '../sections/cargo/view-cargo';
+import { Layout as DashboardLayout } from '../layouts/dashboard/layout';
+import { useAuthContext } from "@asgardeo/auth-react";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import LogoutIcon from '@mui/icons-material/Logout';
 
-export default function CargoPage() {
+const Page = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [data, setData] = useState([]);
-    const {getAccessToken, getBasicUserInfo, getDecodedIDToken} = useAuthContext();
+    const [open, setOpen] = useState(false);
+    const { signOut, getAccessToken } = useAuthContext();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                console.log("User Info: ", await getBasicUserInfo());
-                console.log("Decoded User Info: ", await getDecodedIDToken());
-                const response = await getAPI(getCargoUrl, { headers: { "Authorization": `Bearer ${await getAccessToken()}` } });
-                setLoading(false);
+    const logout = () => {
+        try {
+            signOut();
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const response = await getAPI(getCargoUrl, {
+                headers:
+                {
+                    "Authorization": `Bearer ${await getAccessToken()}`
+                }
+                });
+            if (response.status !== 200) {
+                setError(response.message);
+            } else {
                 setError(null);
-                setData(response.data);
-            } catch (error) {
-                setError(error);
+                const d = await response.data;
+                setData(d);
                 setLoading(false);
             }
-        };
+        } catch (error) {
+            setError(error.message);
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchData();
+        console.log(data)
     }, []);
 
     return (
-        loading ? <div>Loading...</div> :
-            error != null ? <div>{"Error"}</div> :
-                <TableContainer component={Paper}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Cargo Id</TableCell>
-                                <TableCell align="right">startFrom</TableCell>
-                                <TableCell align="right">End From</TableCell>
-                                <TableCell align="right">Status</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {data.map((row) => (
-                                <CargoItem row={row} />
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+        loading ? <div>Loading...</div> : error != null ? <div>{error}</div> :
+            <>
+                <Box
+                    component="main"
+                    sx={{
+                        flexGrow: 1,
+                        py: 8
+                    }}
+                >
+                    <Container maxWidth="xl">
+                        <Stack spacing={3}>
+                            <Stack
+                                direction="row"
+                                justifyContent="space-between"
+                                spacing={4}
+                            >
+                                <Stack spacing={1}>
+                                    <Typography variant="h4">
+                                        Cargos
+                                    </Typography>
+                                </Stack>
+                                <div>
+                                    <div>
+                                        <Button
+                                            startIcon={(
+                                                <SvgIcon fontSize="small">
+                                                    < AddIcon />
+                                                </SvgIcon>
+                                            )}
+                                            style={{ paddingLeft: 20 }}
+                                            href='/create-cargo'
+                                        >
+                                            Create Cargo
+                                        </Button>
+                                        <Button
+                                            startIcon={(
+                                                <SvgIcon fontSize="small">
+                                                    < LogoutIcon />
+                                                </SvgIcon>
+                                            )}
+                                            onClick={() => logout()}
+                                            style={{ paddingLeft: 20 }}
+                                        >
+                                            Sign Out
+                                        </Button>
+                                    </div>
+                                </div>
+                            </Stack>
+                            <CargosTable
+                                count={data.length}
+                                items={data}
+                            />
+                        </Stack>
+                    </Container>
+                </Box>
+            </>
     );
-}
+};
+
+Page.getLayout = (page) => (
+    <DashboardLayout>
+        {page}
+    </DashboardLayout>
+);
+
+export default Page;
