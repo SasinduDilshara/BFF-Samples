@@ -47,6 +47,9 @@ const handleSubmit = async (e) => {
   e.preventDefault();
   const formDataToSend = new FormData();
   formDataToSend.append("form", formData);
+  // formDataToSend.append('post', new Blob([formData], {
+  //           type: "application/json"
+  //       }));
   formDataToSend.append("image", image);
   formDataToSend.append("agreement", agreementPdf);
   console.log("Form data to send", formData)

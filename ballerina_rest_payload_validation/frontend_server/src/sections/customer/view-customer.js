@@ -24,5 +24,5 @@ SimpleDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
   id: PropTypes.string,
-  agreement: PropTypes.object
+  agreement: PropTypes.string
 };

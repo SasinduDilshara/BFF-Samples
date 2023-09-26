@@ -27,7 +27,7 @@ service /sales on new http:Listener(9090) {
     };
 
     // Query orders by customer ID and order status
-    // Example: http://localhost:9090/sales/orders?customer=C-124&status=PENDING
+    // Example: http://localhost:9090/sales/customerOrders?customer=C-124&status=PENDING
     resource function get customerOrders(string customer, string status) returns Order[] {
         Order[] customerOrders = [];
         foreach Order item in orderTable {
