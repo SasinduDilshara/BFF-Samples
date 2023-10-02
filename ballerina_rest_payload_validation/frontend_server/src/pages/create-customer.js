@@ -3,6 +3,8 @@ import { useRouter } from 'next/navigation';
 import {
   Box,
   Button,
+  Dialog,
+  DialogTitle,
   Grid,
   Stack,
   TextField,
@@ -16,6 +18,7 @@ const Page = () => {
   const router = useRouter();
   const [error, setError] = useState(null);
   const [errMessage, setErrorMessage] = useState('');
+  const [open, setOpen] = useState('');
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -31,7 +34,7 @@ const Page = () => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name] : name == "dependents" ? parseInt(value) : value,
+      [name]: name == "dependents" ? parseInt(value) : value,
     });
   };
 
@@ -43,35 +46,41 @@ const Page = () => {
     setAgreementPdf(e.target.files[0]);
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const formDataToSend = new FormData();
-  formDataToSend.append("form", JSON.stringify(formData));
-  // formDataToSend.append('post', new Blob([formData], {
-  //           type: "application/json"
-  //       }));
-  formDataToSend.append("image", image);
-  formDataToSend.append("agreement", agreementPdf);
-  console.log("Form data to send", formData)
-  try {
-    const response = await postAPI(submitCustomersUrl, formDataToSend, {
-      headers: {
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formDataToSend = new FormData();
+    formDataToSend.append("form", JSON.stringify(formData));
+    // formDataToSend.append('post', new Blob([formData], {
+    //           type: "application/json"
+    //       }));
+    formDataToSend.append("image", image);
+    formDataToSend.append("agreement", agreementPdf);
+    console.log("Form data to send", formData)
+    try {
+      const response = await postAPI(submitCustomersUrl, formDataToSend, {
+        headers: {
+        }
+      });
+      if (response.error) {
+        console.log("Error1", response.error)
+        setError(true);
+        console.log(response.error)
+      } else {
+        setErrorMessage("");
+        setOpen(false);
+        setError(null);
+        router.push('/');
       }
-    });
-    if (response.error) {
-      console.log("Error1", response.error)
-      setError(true);
-      console.log(response.error)
-    } else {
-      setErrorMessage("");
-      setError(null);
-      router.push('/');
+    } catch (err) {
+      console.log(err)
+      setErrorMessage(err.data.response.data.message);
+      setOpen(true);
     }
-  } catch (err) {
-    console.log(err)
-    setErrorMessage(err.data.response.data.message);
   }
-}
 
   return (
     // error != null ? <div>Something went wrong</div> :
@@ -144,16 +153,16 @@ const handleSubmit = async (e) => {
                   required
                 />
                 <Stack>
-                <Grid item xs={12}>
-                  <p>Agreement</p>
-                  <input
-                    type="file"
-                    accept=".pdf"
-                    name="agreementPdf"
-                    onChange={handleAgreementPdfChange}
-                    required
-                  />
-                </Grid>
+                  <Grid item xs={12}>
+                    <p>Agreement</p>
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      name="agreementPdf"
+                      onChange={handleAgreementPdfChange}
+                      required
+                    />
+                  </Grid>
                   <p>Profile Photo</p>
                   <Grid item xs={12}>
                     <input
@@ -177,14 +186,11 @@ const handleSubmit = async (e) => {
               >
                 Submit
               </Button>
-              <Button
-                fullWidth
-                size="large"
-                sx={{ mt: 3 }}
-                onClick={() => { }}
-              >
-                Back
-              </Button>
+              <Box sx={{ width: "15rem", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+                <Dialog onClose={handleClose} open={open} fullWidth>
+                  <DialogTitle sx={{ textAlign: "center" }}>{errMessage}</DialogTitle>
+                </Dialog>
+              </Box>
             </form>
           </div>
         </Box>
