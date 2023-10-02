@@ -23,7 +23,7 @@ public type CustomerRegistrationData record {|
 
     @constraint:String {
         pattern: {
-            value: re `\d{3},0\s*,[a-zA-Z]{12},0\s*,[a-zA-Z]{12},,0\s*,[a-zA-Z]{8}`,
+            value: re `\d{1,3},\s*[a-zA-Z]{1,12},\s*[a-zA-Z]{1,12},\s*[a-zA-Z]{1,8}`,
             message: "Invalid Address"
         }
     }
@@ -73,7 +73,11 @@ service /crm on new http:Listener(9090) {
         if registrationDataJson is error {
             return <http:InternalServerError>{body: {message: "Error while registering the customer"}};
         }
-        CustomerRegistrationData|error registrationData = registrationDataJson.cloneWithType();
+        CustomerRegistrationData|error registrationDataRec = registrationDataJson.cloneWithType();
+        if registrationDataRec is error {
+            return <http:InternalServerError>{body: {message: "Error while registering the customer"}};
+        }
+        CustomerRegistrationData|error registrationData = constraint:validate(registrationDataRec);
         byte[]|error agreemntForm = bodyParts[1].getByteArray();
         if agreemntForm is error {
             log:printError("agreement: ",agreemntForm);
