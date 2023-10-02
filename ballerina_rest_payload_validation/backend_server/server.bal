@@ -6,22 +6,38 @@ import ballerina/constraint;
 
 public type CustomerRegistrationData record {|
     @constraint:String {
-        pattern: re `[A-Za-z]+`
+        pattern: {
+            value: re `[A-Za-z]+`,
+            message: "Invalid first name"
+        }
     }
     string firstName;
 
     @constraint:String {
-        pattern: re `[A-Za-z]+`
+        pattern: {
+            value: re `[A-Za-z]+`,
+            message: "Invalid last name"
+        }
     }
     string lastName;
 
     @constraint:String {
-        pattern: re `\d{3},0\s*,[a-zA-Z]{12},0\s*,[a-zA-Z]{12},,0\s*,[a-zA-Z]{8}`
+        pattern: {
+            value: re `\d{3},0\s*,[a-zA-Z]{12},0\s*,[a-zA-Z]{12},,0\s*,[a-zA-Z]{8}`,
+            message: "Invalid Address"
+        }
     }
     string address;
 
     @constraint:Int {
-        minValue: 0, maxValue: 10
+        minValue: {
+            value: 0,
+            message: "Dependent count should be greater than 0"
+        }, 
+        maxValue: {
+            value: 10,
+            message: "Dependent count should be less than 10"
+        }
     }
     int dependents;
 |};
@@ -49,11 +65,15 @@ service /crm on new http:Listener(9090) {
         if bodyParts is error {
             return <http:BadRequest>{body: {message: "Error while parsing the request body parts"}};
         }
-        io:println("body parts: type: ", bodyParts[0].getContentType(), "text: ", bodyParts[0].getText());
-        CustomerRegistrationData|error registrationData = bodyParts[0].getJson().ensureType();
-        if registrationData is error {
-            log:printError("reg data: ",registrationData);
+        string|error registrationDataString = bodyParts[0].getText();
+        if registrationDataString is error {
+            return <http:InternalServerError>{body: {message: "Error while registering the customer"}};
         }
+        json|error registrationDataJson = registrationDataString.fromJsonString();
+        if registrationDataJson is error {
+            return <http:InternalServerError>{body: {message: "Error while registering the customer"}};
+        }
+        CustomerRegistrationData|error registrationData = registrationDataJson.cloneWithType();
         byte[]|error agreemntForm = bodyParts[1].getByteArray();
         if agreemntForm is error {
             log:printError("agreement: ",agreemntForm);
@@ -94,6 +114,5 @@ function getAgreementForm(string s) returns byte[]|error {
     return check io:fileReadBytes(filePath);
 }
 
-function registerCustomer(CustomerRegistrationData registrationData, byte[] agreemntForm, byte[] logoImage) returns string|error {
-    return registerAndGetId(registrationData, agreemntForm, logoImage);
-}
+function registerCustomer(CustomerRegistrationData registrationData, byte[] agreemntForm, byte[] logoImage) returns string|error =>
+     registerAndGetId(registrationData, agreemntForm, logoImage);

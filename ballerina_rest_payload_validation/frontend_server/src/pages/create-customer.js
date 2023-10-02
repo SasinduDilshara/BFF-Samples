@@ -46,7 +46,7 @@ const Page = () => {
 const handleSubmit = async (e) => {
   e.preventDefault();
   const formDataToSend = new FormData();
-  formDataToSend.append("form", formData);
+  formDataToSend.append("form", JSON.stringify(formData));
   // formDataToSend.append('post', new Blob([formData], {
   //           type: "application/json"
   //       }));
