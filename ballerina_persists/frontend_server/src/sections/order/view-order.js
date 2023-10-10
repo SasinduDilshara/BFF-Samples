@@ -43,5 +43,4 @@ SimpleDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
   id: PropTypes.string,
-  order: PropTypes.object
 };
