@@ -18,8 +18,6 @@ export const CustomersTable = (props) => {
     open = false
   } = props;
 
-  console.log("Items: ", items);
-
   return (
     <Card>
       <Scrollbar>

@@ -1,4 +1,4 @@
-public Order[] orderTable = [
+public table<Order> key(orderId) orderTable = table [
     {
         orderId: "HM-278", 
         quantity: 5, 
