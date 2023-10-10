@@ -1,7 +1,6 @@
 import ballerina/http;
 import ballerina/mime;
 import ballerina/io;
-import ballerina/log;
 import ballerina/constraint;
 
 public type CustomerRegistrationData record {|
@@ -79,15 +78,9 @@ service /crm on new http:Listener(9090) {
         }
         CustomerRegistrationData|error registrationData = constraint:validate(registrationDataRec);
         byte[]|error agreemntForm = bodyParts[1].getByteArray();
-        if agreemntForm is error {
-            log:printError("agreement: ",agreemntForm);
-        }
         byte[]|error image = bodyParts[2].getByteArray();
-        if image is error {
-            log:printError("image: ",image);
-        }
         if registrationData is error || agreemntForm is error || image is error {
-            return <http:BadRequest>{body: {message: "Error while parsing the request body"}};
+            return handleErrorRequests(registrationData, agreemntForm, image);
         }
         string|error customerId = registerCustomer(
             registrationData, agreemntForm, image);
@@ -109,7 +102,7 @@ service /crm on new http:Listener(9090) {
     }
 
     resource function get customers() returns  CustomerRegistrationData[] {
-        return customerTable;
+        return customerTable.toArray();
     }
 }
 

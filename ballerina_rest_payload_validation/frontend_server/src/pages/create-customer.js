@@ -54,19 +54,14 @@ const Page = () => {
     e.preventDefault();
     const formDataToSend = new FormData();
     formDataToSend.append("form", JSON.stringify(formData));
-    // formDataToSend.append('post', new Blob([formData], {
-    //           type: "application/json"
-    //       }));
     formDataToSend.append("image", image);
     formDataToSend.append("agreement", agreementPdf);
-    console.log("Form data to send", formData)
     try {
       const response = await postAPI(submitCustomersUrl, formDataToSend, {
         headers: {
         }
       });
       if (response.error) {
-        console.log("Error1", response.error)
         setError(true);
         console.log(response.error)
       } else {

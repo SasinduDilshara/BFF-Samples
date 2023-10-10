@@ -23,7 +23,6 @@ const Page = () => {
       } else {
         setError(null);
         setAgreement(response.data);
-        console.log("Agreement : ", response.data);
       }
     } catch (error) {
       setError(error);

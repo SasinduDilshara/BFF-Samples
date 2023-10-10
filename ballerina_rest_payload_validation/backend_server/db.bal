@@ -1,12 +1,5 @@
-public CustomerRegistrationData[] customerTable = [
-    {firstName: "James", lastName: "Clerk", address: "123, Elm Street, New York", dependents: 2},
-    {firstName: "John", lastName: "Doe", address: "234, White street, Sydney", dependents: 6},
-    {firstName: "Anna", lastName: "Watson", address: "152, Green Avenue, London", dependents: 7}
+public table<CustomerRegistrationData> customerTable = table [
+    {firstName: "James", lastName: "Clerk", address: "456, ElmAvenue, Suite-7, Willowville", dependents: 2},
+    {firstName: "John", lastName: "Doe", address: "789, OakLane, Unit-C12, Pineville", dependents: 6},
+    {firstName: "Anna", lastName: "Watson", address: "101, Maple-Road, OfficeD, Birchwood", dependents: 7}
 ];
-
-
-// public CustomerRegistrationData[] customerTable = [
-//     {firstName: "James", lastName: "Clerk", address: "123, Elm Street, New York", dependents: "2"},
-//     {firstName: "John", lastName: "Doe", address: "234, White street, Sydney", dependents: "6"},
-//     {firstName: "Anna", lastName: "Watson", address: "152, Green Avenue, London", dependents: "7"}
-// ];
