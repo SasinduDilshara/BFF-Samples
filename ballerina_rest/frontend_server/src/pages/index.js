@@ -1,11 +1,9 @@
-import { useRef, useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Head from 'next/head';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
-import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
 import { OrdersTable } from 'src/sections/order/orders-table';
 import { OrdersSearch } from 'src/sections/order/orders-search';
-import { applyPagination } from 'src/utils/apply-pagination';
 import OrderSelect from 'src/sections/order/orders-dropdown';
 import { getCustomerOrderUrl, getOrderUrl } from 'src/constants/Constants';
 import { getAPI } from 'src/api/ApiHandler';
@@ -66,7 +64,6 @@ const Page = () => {
 
   useEffect(() => {
     fetchData();
-    console.log(data)
   }, [filter]);
 
   useEffect(() => {

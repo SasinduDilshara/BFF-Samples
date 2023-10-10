@@ -42,6 +42,5 @@ export default function SimpleDialog(props) {
 SimpleDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   open: PropTypes.bool.isRequired,
-  id: PropTypes.string,
-  order: PropTypes.object
+  id: PropTypes.string
 };
