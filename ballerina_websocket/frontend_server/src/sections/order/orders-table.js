@@ -37,8 +37,6 @@ export default function OrdersTable({items}) {
     
   }, [location1, location2]);
 
-  console.log("LL ",typeof(location1), location2.latitude)
-
   return (
     <Card>
       <Scrollbar>
