@@ -25,6 +25,7 @@ import { useAuthContext } from "@asgardeo/auth-react";
 const Page = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const [errMessage, setErrorMessage] = useState(null);
   const { signOut, getAccessToken } = useAuthContext();
 
   const logout = () => {
@@ -67,7 +68,6 @@ const Page = () => {
         .required('Item is required'),
     }),
     onSubmit: async ({ type, startFrom, endFrom }, helpers) => {
-      console.log("Values", { type, startFrom, endFrom });
       try {
         const response = await postAPI(submitCargoUrl, { type, startFrom, endFrom, cargoId: createCargoId(), status: 'DOCKED', lat: getRandomInRange().toString(), lon: getRandomInRange().toString() }, {
           headers:
@@ -75,17 +75,22 @@ const Page = () => {
               "Authorization": `Bearer ${await getAccessToken()}`
           }
           });
-        if (response.error) {
-          console.log("Error1", response.error)
+        if (response.status == 403) {
+          setErrorMessage("Invalid Access Rights")
+        } else if (response.error) {
+          setErrorMessage(null)
           setError(true);
           console.log(response.error)
         } else {
+          setErrorMessage(null);
           setError(null);
           navigate('/cargos');
         }
       } catch (err) {
-        console.log("Error2", err)
-        console.log("Err", err)
+        setErrorMessage(null)
+        if (err.status == 403) {
+          setErrorMessage("Invalid Access Rights")
+        }
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
@@ -94,6 +99,7 @@ const Page = () => {
   });
 
   return (
+    errMessage != null ? <div>{errMessage}</div> :
     error != null ? <div>Something went wrong</div> :
       <>
         <Box

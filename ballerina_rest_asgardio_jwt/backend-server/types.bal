@@ -8,22 +8,6 @@ public type Order record {|
     string item;
 |};
 
-public enum OrderStatus {
-    PENDING,
-    SHIPPED,
-    DELIVERED,
-    CANCELED,
-    RETURNED
-};
-
-public enum ShipStatus {
-    DOCKED,
-    DEPARTED,
-    IN_TRANSIT,
-    COMPLETED,
-    CANCELED
-};
-
 public type Cargo record {|
     readonly string cargoId;
     ShipStatus status;
@@ -38,4 +22,20 @@ public enum CargoType {
     SHIPEX = "ShipEx",
     CARGO_WAVE = "CargoWave",
     TRADE_LOGIX = "TradeLogix"
+};
+
+public enum OrderStatus {
+    PENDING,
+    SHIPPED,
+    DELIVERED,
+    CANCELED,
+    RETURNED
+};
+
+public enum ShipStatus {
+    DOCKED,
+    DEPARTED,
+    IN_TRANSIT,
+    COMPLETED,
+    CANCELED
 };

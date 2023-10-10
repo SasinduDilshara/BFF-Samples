@@ -18,8 +18,6 @@ export const OrdersTable = (props) => {
     open = false
   } = props;
 
-  console.log("Items: ", items);
-
   return (
     <Card>
         <Box sx={{ minWidth: 800 }}>

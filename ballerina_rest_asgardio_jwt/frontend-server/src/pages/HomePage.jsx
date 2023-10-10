@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from "@asgardeo/auth-react";
 import CustomButton from '../components/CustomButton';
 import OrderPage from './OrderPage';
@@ -18,7 +17,7 @@ export default function HomePage() {
 function GuestHomePage() {
     const {signIn} = useAuthContext();
 
-    return <React.Fragment>
+    return <div style={{minHeight:"100vh", display:"flex", justifyContent:"center", alignItems:"center"}}>
           <CustomButton color="primary" onClick={() => signIn()} disabled={false} label={"Log In"} size={'large'}/>
-      </React.Fragment>
+      </div>
 }

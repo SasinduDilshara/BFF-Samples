@@ -32,24 +32,23 @@ service /sales on new http:Listener(9090) {
     }
     // Add a new order by posting a JSON payload
     resource function post orders(Order 'orders) returns http:Ok {
-        orderTable.push('orders);
-        http:Ok res = {
+        orderTable.add('orders);
+        return {
             body: {
                 message: "Order submitted successfully"
             }
         };
-        return res;
     };
 
-    // @http:ResourceConfig {
-    //     // Either "order_insert" or "order_read" scope is required to invoke this resource
-    //     auth: {
-    //         scopes: ["order_read", "order_insert"]
-    //     }
-    // }
+    @http:ResourceConfig {
+        // Either "order_insert" or "order_read" scope is required to invoke this resource
+        auth: {
+            scopes: ["order_read", "order_insert"]
+        }
+    }
     // Get all orders. Example: http://localhost:9090/sales/orders
     resource function get orders() returns Order[] {
-        return orderTable;
+        return orderTable.toArray();
     };
 
     @http:ResourceConfig {
@@ -59,13 +58,12 @@ service /sales on new http:Listener(9090) {
     }
     // Add a new cargo by posting a JSON payload
     resource function post cargos(Cargo 'cargos) returns http:Ok {
-        cargoTable.push('cargos);
-        http:Ok res = {
+        cargoTable.add('cargos);
+        return {
             body: {
                 message: "Cargo submitted successfully"
             }
         };
-        return res;
     };
 
     @http:ResourceConfig {
@@ -75,7 +73,7 @@ service /sales on new http:Listener(9090) {
     }
     // Get all cargos. Example: http://localhost:9090/sales/cargos
     resource function get cargos() returns Cargo[] {
-        return cargoTable;
+        return cargoTable.toArray();
     };
 
     @http:ResourceConfig {
@@ -85,14 +83,11 @@ service /sales on new http:Listener(9090) {
     }
     // Get cargo by ID. Example: http://localhost:9090/sales/cargos/SP-124
     resource function get cargos/[string id]() returns Cargo|http:NotFound {
-        foreach Cargo cargo in cargoTable {
-            if cargo.cargoId == id {
-                return cargo;
-            }
+        if cargoTable.hasKey(id) {
+            return cargoTable.get(id);
         }
-        http:NotFound res = {
+        return {
             body: "Cargo not found. Cargo ID: " + id
         };
-        return res;
     };
 }

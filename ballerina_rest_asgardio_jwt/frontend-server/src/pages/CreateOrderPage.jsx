@@ -64,7 +64,6 @@ const Page = () => {
         .required('Username is required')
     }),
     onSubmit: async ({ item, customer, quantity }, helpers) => {
-      console.log("Values", { item, customer, quantity });
       try {
         const response = await postAPI(submitOrderUrl, { date: createdDate(), item, customerId: customer, status: 'PENDING', shipId: null, orderId: createID(), quantity: parseInt(quantity) }, {
           headers: {
@@ -73,7 +72,6 @@ const Page = () => {
           }
         });
         if (response.error) {
-          console.log("Error1", response.error)
           setError(true);
           console.log(response.error)
         } else {
@@ -81,8 +79,7 @@ const Page = () => {
           navigate('/');
         }
       } catch (err) {
-        console.log("Error2", err)
-        console.log("Err", err)
+        console.log(err)
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
