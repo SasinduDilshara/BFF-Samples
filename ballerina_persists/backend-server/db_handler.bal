@@ -1,1 +1,0 @@
-Client ordersDatabase = check new ();

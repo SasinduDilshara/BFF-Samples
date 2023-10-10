@@ -62,7 +62,6 @@ const Page = () => {
 
   useEffect(() => {
     fetchData();
-    console.log(data)
   }, [filter]);
 
   useEffect(() => {
