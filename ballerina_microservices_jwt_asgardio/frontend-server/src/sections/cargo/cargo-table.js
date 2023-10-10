@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import {
   Box,
-  Button,
   Card,
   Table,
   TableBody,
@@ -14,8 +13,6 @@ export const CargosTable = (props) => {
   const {
     items = []
   } = props;
-
-  console.log("Items: ", items);
 
   return (
     <Card>

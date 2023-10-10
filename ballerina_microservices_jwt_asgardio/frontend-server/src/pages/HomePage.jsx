@@ -18,7 +18,7 @@ export default function HomePage() {
 function GuestHomePage() {
     const {signIn} = useAuthContext();
 
-    return <React.Fragment>
+    return <div style={{minHeight:"100vh", display:"flex", justifyContent:"center", alignItems:"center"}}>
           <CustomButton color="primary" onClick={() => signIn()} disabled={false} label={"Log In"} size={'large'}/>
-      </React.Fragment>
+      </div>
 }

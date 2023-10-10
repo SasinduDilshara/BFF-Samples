@@ -1,11 +1,3 @@
-public enum ShipStatus {
-    DOCKED,
-    DEPARTED,
-    IN_TRANSIT,
-    COMPLETED,
-    CANCELED
-};
-
 public type Cargo record {|
     readonly string cargoId;
     ShipStatus status;
@@ -20,4 +12,12 @@ public enum CargoType {
     SHIPEX = "ShipEx",
     CARGO_WAVE = "CargoWave",
     TRADE_LOGIX = "TradeLogix"
+};
+
+public enum ShipStatus {
+    DOCKED,
+    DEPARTED,
+    IN_TRANSIT,
+    COMPLETED,
+    CANCELED
 };

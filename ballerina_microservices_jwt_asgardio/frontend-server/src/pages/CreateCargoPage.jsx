@@ -16,8 +16,6 @@ import {
 import { useState } from 'react';
 import { postAPI } from '../api/ApiHandler';
 import { submitCargoUrl } from '../api/Constants';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useAuthContext } from "@asgardeo/auth-react";
@@ -67,7 +65,6 @@ const Page = () => {
         .required('Item is required'),
     }),
     onSubmit: async ({ type, startFrom, endFrom }, helpers) => {
-      console.log("Values", { type, startFrom, endFrom });
       try {
         const response = await postAPI(submitCargoUrl, { type, startFrom, endFrom, cargoId: createCargoId(), status: 'DOCKED', lat: getRandomInRange().toString(), lon: getRandomInRange().toString() }, {
           headers:
@@ -76,7 +73,6 @@ const Page = () => {
           }
           });
         if (response.error) {
-          console.log("Error1", response.error)
           setError(true);
           console.log(response.error)
         } else {
@@ -84,8 +80,7 @@ const Page = () => {
           navigate('/cargos');
         }
       } catch (err) {
-        console.log("Error2", err)
-        console.log("Err", err)
+        console.log(err)
         helpers.setStatus({ success: false });
         helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);

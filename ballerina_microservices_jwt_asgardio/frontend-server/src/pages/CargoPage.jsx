@@ -3,18 +3,15 @@ import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/materia
 import { CargosTable } from '../sections/cargo/cargo-table';
 import { getCargoUrl } from '../api/Constants';
 import { getAPI } from '../api/ApiHandler';
-import SimpleDialog from '../sections/cargo/view-cargo';
 import { Layout as DashboardLayout } from '../layouts/dashboard/layout';
 import { useAuthContext } from "@asgardeo/auth-react";
 import AddIcon from '@mui/icons-material/Add';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 const Page = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [data, setData] = useState([]);
-    const [open, setOpen] = useState(false);
     const { signOut, getAccessToken } = useAuthContext();
 
     const logout = () => {
@@ -50,7 +47,6 @@ const Page = () => {
 
     useEffect(() => {
         fetchData();
-        console.log(data)
     }, []);
 
     return (
