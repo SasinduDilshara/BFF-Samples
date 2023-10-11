@@ -1,5 +1,5 @@
-import ballerina/log;
 import ballerina/graphql;
+import ballerina/log;
 
 @graphql:ServiceConfig {
     cors: {

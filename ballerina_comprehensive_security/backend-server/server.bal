@@ -2,7 +2,7 @@ import ballerina/http;
 
 @http:ServiceConfig {
     cors: {
-            allowOrigins: ["http://localhost:3000", "http://www.hmart-dev.com", "http://www.hmart.com"],
+        allowOrigins: ["http://localhost:3000", "http://www.hmart-dev.com", "http://www.hmart.com"],
         allowCredentials: false,
         allowHeaders: ["REQUEST_ID"],
         exposeHeaders: ["RESPONSE_ID"],
@@ -10,12 +10,12 @@ import ballerina/http;
     }
 }
 // service /sales on new http:Listener(9090, 
-//         secureSocket = {
-//             key: {
-//                 certFile: "../resources/public.crt",
-//                 keyFile: "../resources/private.key"
-//             }
-//         }) {
+        // secureSocket = {
+        //     key: {
+        //         certFile: "../resources/public.crt",
+        //         keyFile: "../resources/private.key"
+        //     }
+        // }) {
 service /sales on new http:Listener(9090) {
 
     @http:ResourceConfig {

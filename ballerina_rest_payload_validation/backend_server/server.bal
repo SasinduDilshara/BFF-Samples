@@ -1,7 +1,7 @@
-import ballerina/http;
-import ballerina/mime;
-import ballerina/io;
 import ballerina/constraint;
+import ballerina/http;
+import ballerina/io;
+import ballerina/mime;
 
 public type CustomerRegistrationData record {|
     @constraint:String {
