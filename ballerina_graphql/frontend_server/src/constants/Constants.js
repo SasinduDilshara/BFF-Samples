@@ -8,9 +8,9 @@ export const submitOrderUrl = serverUrl + "/sales/order";
 // GET requests
 export const graphQlUrl = serverUrl + "/sales";
 
-export const getOrdersQuery =
-    gql`query {
-            orders {
+export const getOrdersQuery = 
+    gql `query getOrdersQuery($customerId: String) {
+            orders(customerId: $customerId) {
                 orderId
                 status
                 customerId

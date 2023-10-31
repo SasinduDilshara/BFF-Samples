@@ -7,26 +7,31 @@ import { getOrdersQuery } from 'src/constants/Constants';
 import { useQuery } from '@apollo/client';
 
 const Page = () => {
-  const [customer, setCustomer] = useState("");
-  const [filter, setFilter] = useState(false);
+  const [customer, setCustomer] = useState(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     
-  }, [filter]);
+  }, []);
 
-  const { loading, error, data } = useQuery(getOrdersQuery);
-  if (loading) return <p>Loading...</p>;
+  const { loading, error, data } = useQuery(getOrdersQuery, {
+    variables: {customerId: customer}
+  });
+  if (loading) return <p></p>;
   if (error) return <p>Error: {error.message}</p>;
-
-
 
   const onSearchButtonClick = (e) => {
     e.preventDefault();
-    setFilter(!filter);
+    setCustomer(search);
   }
   
   const onSearchChange = (e) => {
-    setCustomer(e.target.value);
+    e.preventDefault();
+    if (e.target.value == "") {
+      setSearch(null);
+    } else {
+      setSearch(e.target.value);
+    }
   }
 
   return (
@@ -61,11 +66,11 @@ const Page = () => {
               direction="row"
               alignContent={'center'}
               >
-            {/* <OrdersSearch 
+            <OrdersSearch 
               onChange={onSearchChange} 
-              customer={customer}
+              customer={search}
             />
-            <Button label="Search" value="Search" onClick={onSearchButtonClick}> Search </Button> */}
+            <Button label="Search" value="Search" onClick={onSearchButtonClick}> Search </Button>
             </Stack>
             <OrdersTable
               items={data}
