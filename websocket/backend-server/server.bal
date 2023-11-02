@@ -1,9 +1,14 @@
 import ballerina/lang.runtime;
 import ballerina/log;
+import ballerina/random;
 import ballerina/websocket;
 
-// Expose websocker server over port 9091.
-// Example ws://localhost:9091/sales.
+type Location record {
+    float latitude;
+    float longitude;
+};
+
+// Example ws://localhost:9091/logistics/vehicles/V-20.
 service /logistics on new websocket:Listener(9091) {
     resource function get vehicles/[string vehicleId]() returns websocket:Service {
         return new OrderService(vehicleId);
@@ -19,23 +24,11 @@ distinct service class OrderService {
     }
 
     remote function onOpen(websocket:Caller caller) returns error? {
-        Location[]? locations = vehicleLocations[self.vehicleId];
-        if locations is () {
-            return error("Invalid vehicle id");
-        }
-        int i = 0;
-        while true {
-            Location currentLocation = {
-                latitude: locations[i % locations.length()].latitude,
-                longitude: locations[i % locations.length()].longitude
-            };
-            i = i + 1;
-            error? e = caller->writeMessage(currentLocation);
-            if e is error {
-                log:printError("Error while upodating the location details", e);
-            }
-            runtime:sleep(1);
-        }
+
+        // Create a new strand allocate it to send the locations 
+        // to the client via `routeLocationFromServerToClient` 
+        _ = start self.routeLocationFromServerToClient(caller, self.vehicleId);
+        return;
     }
 
     remote function onClose(websocket:Caller caller) {
@@ -44,5 +37,20 @@ distinct service class OrderService {
 
     remote function onError(websocket:Caller caller, error err) {
         log:printInfo("Error occured", err);
+    }
+
+    function routeLocationFromServerToClient(websocket:Caller caller, string vehicleId) returns error? {
+        while true {
+            Location currentLocation = {
+                latitude: check random:createIntInRange(668700, 1246700) * 1.0 / 10000.0,
+                longitude: check random:createIntInRange(258400, 493800) * 1.0 / 10000.0
+            };
+            error? e = caller->writeMessage(currentLocation);
+            if e is error {
+                log:printError("Error while upodating the location details", e);
+                return;
+            }
+            runtime:sleep(2);
+        }
     }
 }
