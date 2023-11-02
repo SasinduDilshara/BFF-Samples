@@ -1,4 +1,6 @@
 import ballerina/http;
+import ballerina/persist;
+import ballerina/random;
 
 Client ordersDatabase = check new ();
 
@@ -8,52 +10,56 @@ Client ordersDatabase = check new ();
     }
 }
 service /sales on new http:Listener(9090) {
-    function init() {
-        addCargos();
-    }
 
-    // Add a new order to the database
-    resource function post orders(Order 'order) returns http:Ok|http:BadRequest {
-        'order.cargoId = assignCargoId();
-        string[]|error submitResult = ordersDatabase->/orders.post(['order]);
+    // Example: http://localhost:9090/sales/orders
+    resource function post orders(Order orderEntry) returns http:Ok|http:InternalServerError|http:BadRequest|error {
+        orderEntry.cargoId = check assignCargoId();
+        string[]|persist:Error submitResult = ordersDatabase->/orders.post([orderEntry]);
         if submitResult is string[] {
-            http:Ok res = {};
-            return res;
+            return http:OK;
+        } else if submitResult is persist:ConstraintViolationError {
+            return <http:BadRequest>{
+                body: {
+                    message: string `Invalid cargo id: ${orderEntry.cargoId}`
+                }
+            };
+        } else {
+            return <http:InternalServerError>{
+                body: {
+                    message: string `Error while inserting an order ${submitResult.message()}`
+                }
+            };
         }
-        http:BadRequest res = {
-            body: {
-                message: submitResult.message()
-            }
-        };
-        return res;
     };
 
-    // Get all orders from the database. Example: http://localhost:9090/sales/orders
+    // Example: http://localhost:9090/sales/orders
     resource function get orders() returns Order[]|error {
-        return from Order 'order in ordersDatabase->/orders(targetType = Order)
-            select 'order;
+        return from Order entry in ordersDatabase->/orders(targetType = Order)
+            select entry;
     };
 
-    // Get the order with the given 'orderId'. Example: http://localhost:9090/sales/orders/HM-238
+    // Example: http://localhost:9090/sales/orders/HM-238
     resource function get orders/[string id]() returns Order|http:BadRequest {
-        Order|error 'order = ordersDatabase->/orders/[id];
-        if 'order is Order {
-            return 'order;
+        Order|error orderEntry = ordersDatabase->/orders/[id];
+        if orderEntry is Order {
+            return orderEntry;
         }
-        http:BadRequest res = {
+        return <http:BadRequest>{
             body: {
-                message: 'order.message()
+                message: string `Error while inserting the order, ${orderEntry.message()}`
             }
         };
-        return res;
     };
 
-
-    // Get all orders with the given 'cargoId' sorted by 'quantity'
-    resource function get cargoOrders(string cargoId) returns Order[]|error {
-        return from Order 'order in ordersDatabase->/orders(targetType = Order)
-            where 'order.cargoId == cargoId
-            order by 'order.quantity descending
-            select 'order;
+    // Example: http://localhost:9090/sales/cargos/HM-238/orders
+    resource function get cargos/[string cargoId]/orders() returns Order[]|error {
+        return from Order entry in ordersDatabase->/orders(Order)
+            where entry.cargoId == cargoId
+            order by entry.quantity descending
+            select entry;
     };
+}
+
+function assignCargoId() returns string|error {
+    return string `S-${check random:createIntInRange(224, 226)}`;
 }
