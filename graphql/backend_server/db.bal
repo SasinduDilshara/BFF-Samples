@@ -1,6 +1,6 @@
-public table<Order> key(orderId) orderTable = table [
+final table<Order> key(id) orders = table [
     {
-        orderId: "HM-278", 
+        id: "HM-278", 
         quantity: 5, 
         item: "TV", 
         customerId: "C-124", 
@@ -15,7 +15,7 @@ public table<Order> key(orderId) orderTable = table [
         }
     },
     {
-        orderId: "HM-340", 
+        id: "HM-340", 
         quantity: 3, 
         item: "IPhone 14", 
         customerId: "C-73", 
@@ -30,7 +30,7 @@ public table<Order> key(orderId) orderTable = table [
         }
     },
     {
-        orderId: "HM-720", 
+        id: "HM-720", 
         quantity: 3, 
         item: "IPhone 15", 
         customerId: "C-73", 
@@ -45,7 +45,7 @@ public table<Order> key(orderId) orderTable = table [
         }
     },
     {
-        orderId: "HM-9300", 
+        id: "HM-9300", 
         quantity: 3, 
         item: "IPhone 15 pro", 
         customerId: "C-73", 

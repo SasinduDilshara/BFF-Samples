@@ -1,31 +1,7 @@
 import ballerina/graphql;
-import ballerina/log;
-
-@graphql:ServiceConfig {
-    cors: {
-        allowOrigins: ["*"]
-    }
-}
-// Get all orders. Example: http://localhost:9090/sales/orders
-service /sales on new graphql:Listener(9090) {
-    // Query orders via the GraphQL URL: http://localhost:9090/sales
-    // Example query: 
-    // query {
-    //     orders(customerId:"C-124") { customerId, item, shippingAddress: {city} }
-    // }
-    resource function get orders(string? customerId) returns Order[]|error {
-        log:printInfo("Get orders for customer: " + (customerId?: "Any"));
-        if customerId is () {
-            return orderTable.toArray();
-        }
-        return from Order 'order in orderTable
-            where 'order.customerId == customerId
-            select 'order;
-    }
-}
 
 public type Order record {|
-    readonly string orderId;
+    readonly string id;
     string customerId;
     string? shipId;
     Address? shippingAddress;
@@ -41,3 +17,30 @@ public type Address record {|
     string city;
     string state;
 |};
+
+public enum OrderStatus {
+    PENDING,
+    SHIPPED,
+    DELIVERED,
+    CANCELED,
+    RETURNED
+};
+
+@graphql:ServiceConfig {
+    cors: {
+        allowOrigins: ["*"]
+    }
+}
+service /sales on new graphql:Listener(9090) {
+    // GraphQL URL: http://localhost:9090/sales
+    // Example query: 
+    // query { orders(customerId:"C-124"){ customerId, item, shippingAddress:{ city } } }
+    resource function get orders(string? customerId) returns Order[]|error {
+        if customerId is () {
+            return orders.toArray();
+        }
+        return from Order entry in orders
+            where entry.customerId == customerId
+            select entry;
+    }
+}
