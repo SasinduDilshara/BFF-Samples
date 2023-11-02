@@ -1,5 +1,27 @@
 import ballerina/http;
-import ballerina/log;
+
+public type Order record {|
+    readonly string id;
+    string customerId;
+    string? shipId;
+    string date;
+    OrderStatus status;
+    int quantity;
+    string item;
+|};
+
+public enum OrderStatus {
+    PENDING,
+    SHIPPED,
+    DELIVERED,
+    CANCELED,
+    RETURNED
+};
+
+final table<Order> key(id) orders = table [
+    {id: "HM-278", quantity: 5, item: "TV", customerId: "C-124", shipId: "S-8", date: "22-11-2023", status: PENDING},
+    {id: "HM-340", quantity: 3, item: "IPhone 14", customerId: "C-73", shipId: "S-32", date: "12-11-2023", status: DELIVERED}
+];
 
 @http:ServiceConfig {
     cors: {
@@ -8,38 +30,32 @@ import ballerina/log;
 }
 service /sales on new http:Listener(9090) {
 
-    // Get all orders. Example: http://localhost:9090/sales/orders
+    // Example: http://localhost:9090/sales/orders
     resource function get orders() returns Order[] {
-        return orderTable.toArray();
+        return orders.toArray();
     };
 
-    // Get order by ID. Example: http://localhost:9090/sales/orders/HM-238
+    // Example: http://localhost:9090/sales/orders/HM-238
     resource function get orders/[string id]() returns Order|http:NotFound {
-        if orderTable.hasKey(id) {
-            return orderTable.get(id);
+        if orders.hasKey(id) {
+            return orders.get(id);
         }
-        http:NotFound res = {
-            body: "Order not found. Order ID: " + id
-        };
-        return res;
+        return <http:NotFound>{ body: string `Order not found. Order ID: ${id}` };
     };
 
-    // Query orders by customer ID and order status
-    // Example: http://localhost:9090/sales/customerOrders?customer=C-124&status=PENDING
-    resource function get customerOrders(string customer, string status) returns Order[] {
-        return from Order item in orderTable
-               where item.customerId == customer && item.status == status
-               select item;
+    // Example: http://localhost:9090/sales/customers/C-124/orders?status=PENDING
+    resource function get customers/[string customerId]/orders(OrderStatus status = PENDING) returns Order[] {
+        return from Order entry in orders
+            where entry.customerId == customerId && entry.status == status
+            select entry;
     };
 
-    // Add a new order by posting a JSON payload
-    // Request ID is passed as a header for logging purposes
-    resource function post orders(@http:Header string requestId, Order 'order) returns http:Ok {
-        log:printInfo("Order received: " + requestId);
-        orderTable.add('order);
-        http:Ok res = {
-            body: "Order submitted successfully"
-        };
-        return res;
-    };
+    // Example: http://localhost:9090/sales/orders
+    resource function post orders(Order orderRequest) returns Order|http:BadRequest {
+        if orders.hasKey(orderRequest.id) {
+            return <http:BadRequest>{ body: string `Order id already exists. Order ID: ${orderRequest.id}` };
+        }
+        orders.add(orderRequest);
+        return orderRequest;
+    }
 }
