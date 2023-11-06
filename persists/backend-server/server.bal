@@ -2,7 +2,7 @@ import ballerina/http;
 import ballerina/persist;
 import ballerina/random;
 
-Client ordersDatabase = check new ();
+final Client ordersDatabase = check new ();
 
 @http:ServiceConfig {
     cors: {
@@ -12,7 +12,7 @@ Client ordersDatabase = check new ();
 service /sales on new http:Listener(9090) {
 
     // Example: http://localhost:9090/sales/orders
-    resource function post orders(Order orderEntry) returns http:Ok|http:InternalServerError|http:BadRequest|error {
+    isolated resource function post orders(Order orderEntry) returns http:Ok|http:InternalServerError|http:BadRequest|error {
         orderEntry.cargoId = check assignCargoId();
         string[]|persist:Error submitResult = ordersDatabase->/orders.post([orderEntry]);
         if submitResult is string[] {
@@ -33,13 +33,13 @@ service /sales on new http:Listener(9090) {
     };
 
     // Example: http://localhost:9090/sales/orders
-    resource function get orders() returns Order[]|error {
+    isolated resource function get orders() returns Order[]|error {
         return from Order entry in ordersDatabase->/orders(targetType = Order)
             select entry;
     };
 
     // Example: http://localhost:9090/sales/orders/HM-238
-    resource function get orders/[string id]() returns Order|http:BadRequest {
+    isolated resource function get orders/[string id]() returns Order|http:BadRequest {
         Order|error orderEntry = ordersDatabase->/orders/[id];
         if orderEntry is Order {
             return orderEntry;
@@ -52,14 +52,15 @@ service /sales on new http:Listener(9090) {
     };
 
     // Example: http://localhost:9090/sales/cargos/HM-238/orders
-    resource function get cargos/[string cargoId]/orders() returns Order[]|error {
-        return from Order entry in ordersDatabase->/orders(Order)
+    isolated resource function get cargos/[string cargoId]/orders() returns Order[]|error {
+        return from Order entry in ordersDatabase->/orders(targetType = Order)
+            where entry.cargoId == cargoId
             where entry.cargoId == cargoId
             order by entry.quantity descending
             select entry;
     };
 }
 
-function assignCargoId() returns string|error {
+isolated function assignCargoId() returns string|error {
     return string `S-${check random:createIntInRange(224, 226)}`;
 }

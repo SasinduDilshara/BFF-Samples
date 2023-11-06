@@ -1,6 +1,6 @@
 [package]
 org = "wso2"
-name = "ballerina_persists"
+name = "persists"
 version = "0.1.0"
 distribution = "2201.6.0"
 
@@ -9,9 +9,9 @@ observabilityIncluded = true
 
 [persist]
 datastore = "mysql"
-module = "ballerina_persists"
+module = "persists"
 
 [[platform.java11.dependency]]
 groupId = "io.ballerina.stdlib"
 artifactId = "persist.sql-native"
-version = "1.1.0"
+version = "1.2.0"
