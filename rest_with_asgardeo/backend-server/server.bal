@@ -4,6 +4,16 @@ configurable string issuer = ?;
 configurable string audience = ?;
 configurable string jwksUrl = ?;
 
+final table<Order> key(orderId) orderTable = table [
+    {orderId: "HM-278", quantity: 5, item: "TV", customerId: "C-124", shipId: "S-8", date: "22-11-2023", status: PENDING},
+    {orderId: "HM-340", quantity: 3, item: "IPhone 14", customerId: "C-73", shipId: "S-32", date: "12-11-2023", status: DELIVERED}
+];
+
+final table<Cargo> key(cargoId) cargoTable = table [
+    {cargoId: "SP-124", status: DEPARTED, lat: "1.2312", lon: "72.1110", startFrom: "London", endFrom: "Washington", 'type: SHIPEX},
+    {cargoId: "SP-73", status: IN_TRANSIT, lat: "1.1110", lon: "72.1110", startFrom: "Melbourne", endFrom: "Sydney", 'type: CARGO_WAVE}
+];
+
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["*"]
@@ -30,14 +40,9 @@ service /sales on new http:Listener(9090) {
             scopes: ["order_insert"]
         }
     }
-    // Add a new order by posting a JSON payload
     resource function post orders(Order 'orders) returns http:Ok {
         orderTable.add('orders);
-        return {
-            body: {
-                message: "Order submitted successfully"
-            }
-        };
+        return <http:Ok>{ body: { message: "Order submitted successfully" } };
     };
 
     @http:ResourceConfig {
@@ -46,7 +51,6 @@ service /sales on new http:Listener(9090) {
             scopes: ["order_read", "order_insert"]
         }
     }
-    // Get all orders. Example: http://localhost:9090/sales/orders
     resource function get orders() returns Order[] {
         return orderTable.toArray();
     };
@@ -56,14 +60,9 @@ service /sales on new http:Listener(9090) {
             scopes: ["cargo_insert"]
         }
     }
-    // Add a new cargo by posting a JSON payload
     resource function post cargos(Cargo 'cargos) returns http:Ok {
         cargoTable.add('cargos);
-        return {
-            body: {
-                message: "Cargo submitted successfully"
-            }
-        };
+        return <http:Ok>{ body: { message: "Cargo submitted successfully" } };
     };
 
     @http:ResourceConfig {
@@ -71,7 +70,6 @@ service /sales on new http:Listener(9090) {
             scopes: ["cargo_read", "cargo_insert"]
         }
     }
-    // Get all cargos. Example: http://localhost:9090/sales/cargos
     resource function get cargos() returns Cargo[] {
         return cargoTable.toArray();
     };
@@ -81,13 +79,10 @@ service /sales on new http:Listener(9090) {
             scopes: ["cargo_read", "cargo_insert"]
         }
     }
-    // Get cargo by ID. Example: http://localhost:9090/sales/cargos/SP-124
     resource function get cargos/[string id]() returns Cargo|http:NotFound {
         if cargoTable.hasKey(id) {
             return cargoTable.get(id);
         }
-        return {
-            body: "Cargo not found. Cargo ID: " + id
-        };
+        return <http:NotFound>{ body: "Cargo not found. Cargo ID: " + id };
     };
 }
