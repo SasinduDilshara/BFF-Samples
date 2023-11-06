@@ -33,7 +33,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "constraint"
-version = "1.5.0"
+version = "1.4.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
 ]
@@ -302,8 +302,8 @@ modules = [
 ]
 
 [[package]]
-org = "wso2"
-name = "ballerina_rest_payload_validation"
+org = "bff"
+name = "payload_validation"
 version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
@@ -314,6 +314,6 @@ dependencies = [
 	{org = "ballerinai", name = "observe"}
 ]
 modules = [
-	{org = "wso2", packageName = "ballerina_rest_payload_validation", moduleName = "ballerina_rest_payload_validation"}
+	{org = "bff", packageName = "payload_validation", moduleName = "payload_validation"}
 ]
 

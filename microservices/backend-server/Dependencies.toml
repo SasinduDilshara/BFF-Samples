@@ -284,8 +284,8 @@ modules = [
 ]
 
 [[package]]
-org = "wso2"
-name = "ballerina_microservices_jwt_asgardio"
+org = "bff"
+name = "microservices"
 version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
@@ -293,9 +293,9 @@ dependencies = [
 	{org = "ballerinai", name = "observe"}
 ]
 modules = [
-	{org = "wso2", packageName = "ballerina_microservices_jwt_asgardio", moduleName = "ballerina_microservices_jwt_asgardio"},
-	{org = "wso2", packageName = "ballerina_microservices_jwt_asgardio", moduleName = "ballerina_microservices_jwt_asgardio.cargoWave"},
-	{org = "wso2", packageName = "ballerina_microservices_jwt_asgardio", moduleName = "ballerina_microservices_jwt_asgardio.shipEx"},
-	{org = "wso2", packageName = "ballerina_microservices_jwt_asgardio", moduleName = "ballerina_microservices_jwt_asgardio.tradeLogix"}
+	{org = "bff", packageName = "microservices", moduleName = "microservices"},
+	{org = "bff", packageName = "microservices", moduleName = "microservices.cargoWave"},
+	{org = "bff", packageName = "microservices", moduleName = "microservices.shipEx"},
+	{org = "bff", packageName = "microservices", moduleName = "microservices.tradeLogix"}
 ]
 

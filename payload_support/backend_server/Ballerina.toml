@@ -1,8 +1,8 @@
 [package]
-org = "wso2"
-name = "ballerina_rest_payload_validation"
+org = "bff"
+name = "payload_validation"
 version = "0.1.0"
-distribution = "2201.8.0"
+distribution = "2201.8.2"
 
 [build-options]
 observabilityIncluded = true

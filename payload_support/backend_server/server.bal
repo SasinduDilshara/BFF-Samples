@@ -28,7 +28,7 @@ service /crm on new http:Listener(9090) {
         consumes: ["multipart/form-data"],
         produces: ["application/json"]
     }
-
+    // Example: http://localhost:9090/crm/customers
     resource function post customers(http:Request request) returns http:Created|http:InternalServerError {
         do {
             mime:Entity[] bodyParts = check request.getBodyParts();
@@ -47,6 +47,7 @@ service /crm on new http:Listener(9090) {
     @http:ResourceConfig {
         produces: ["application/pdf"]
     }
+    // Example: http://localhost:9090/crm/customers/C-123/agreement
     resource function get customers/[string customerId]/agreement() returns @http:Cache {maxAge: 15} byte[]|http:NotFound {
         byte[]|error agreementForm = getAgreementForm(customerId);
         if agreementForm is error {
@@ -55,6 +56,7 @@ service /crm on new http:Listener(9090) {
         return agreementForm;
     }
 
+    // Example: http://localhost:9090/crm/customers
     resource function get customers() returns CustomerRegistrationData[] {
         return customerTable.toArray();
     }

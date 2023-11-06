@@ -1,6 +1,6 @@
-import ballerina_microservices_jwt_asgardio.cargoWave as _;
-import ballerina_microservices_jwt_asgardio.shipEx as _;
-import ballerina_microservices_jwt_asgardio.tradeLogix as _;
+import microservices.cargoWave as _;
+import microservices.shipEx as _;
+import microservices.tradeLogix as _;
 
 import ballerina/http;
 

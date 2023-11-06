@@ -25,8 +25,7 @@ distinct service class OrderService {
 
     remote function onOpen(websocket:Caller caller) returns error? {
 
-        // Create a new strand allocate it to send the locations 
-        // to the client via `routeLocationFromServerToClient` 
+        // Create a new strand  and allocate it to send the locations to the client 
         _ = start self.routeLocationFromServerToClient(caller, self.vehicleId);
         return;
     }
@@ -47,10 +46,10 @@ distinct service class OrderService {
             };
             error? e = caller->writeMessage(currentLocation);
             if e is error {
-                log:printError("Error while upodating the location details", e);
+                log:printError(string `Error while upodating the location of vehicle: ${vehicleId}`, e);
                 return;
             }
-            runtime:sleep(2);
+            runtime:sleep(3);
         }
     }
 }

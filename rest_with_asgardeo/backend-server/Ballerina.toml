@@ -1,6 +1,6 @@
 [package]
-org = "wso2"
-name = "ballerina_rest_asgardio_jwt"
+org = "bff"
+name = "rest_asgardeo"
 version = "0.1.0"
 distribution = "2201.8.2"
 

@@ -46,11 +46,13 @@ service /sales on new http:Listener(9090) {
             allowCredentials: true
         }
     }
+    // Example: http://localhost:9090/sales/orders
     resource function post orders(Order orderEntry) returns http:Ok {
         orderTable.add(orderEntry);
         return <http:Ok>{ body: { message: "Order submitted successfully" }};
     };
 
+    // Example: http://localhost:9090/sales/orders
     resource function get orders() returns Order[] {
         return orderTable.toArray();
     };

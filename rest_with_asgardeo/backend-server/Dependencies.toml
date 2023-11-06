@@ -33,7 +33,7 @@ dependencies = [
 [[package]]
 org = "ballerina"
 name = "constraint"
-version = "1.5.0"
+version = "1.4.0"
 dependencies = [
 	{org = "ballerina", name = "jballerina.java"}
 ]
@@ -281,14 +281,14 @@ modules = [
 ]
 
 [[package]]
-org = "wso2"
-name = "ballerina_rest_asgardio_jwt"
+org = "bff"
+name = "rest_asgardeo"
 version = "0.1.0"
 dependencies = [
 	{org = "ballerina", name = "http"},
 	{org = "ballerinai", name = "observe"}
 ]
 modules = [
-	{org = "wso2", packageName = "ballerina_rest_asgardio_jwt", moduleName = "ballerina_rest_asgardio_jwt"}
+	{org = "bff", packageName = "rest_asgardeo", moduleName = "rest_asgardeo"}
 ]
 

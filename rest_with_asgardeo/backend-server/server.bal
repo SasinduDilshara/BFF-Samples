@@ -40,6 +40,7 @@ service /sales on new http:Listener(9090) {
             scopes: ["order_insert"]
         }
     }
+    // Example: http://localhost:9090/sales/orders
     resource function post orders(Order 'orders) returns http:Ok {
         orderTable.add('orders);
         return <http:Ok>{ body: { message: "Order submitted successfully" } };
@@ -51,6 +52,7 @@ service /sales on new http:Listener(9090) {
             scopes: ["order_read", "order_insert"]
         }
     }
+    // Example: http://localhost:9090/sales/orders
     resource function get orders() returns Order[] {
         return orderTable.toArray();
     };
@@ -60,6 +62,7 @@ service /sales on new http:Listener(9090) {
             scopes: ["cargo_insert"]
         }
     }
+    // Example: http://localhost:9090/sales/cargos
     resource function post cargos(Cargo 'cargos) returns http:Ok {
         cargoTable.add('cargos);
         return <http:Ok>{ body: { message: "Cargo submitted successfully" } };
@@ -70,6 +73,7 @@ service /sales on new http:Listener(9090) {
             scopes: ["cargo_read", "cargo_insert"]
         }
     }
+    // Example: http://localhost:9090/sales/cargos
     resource function get cargos() returns Cargo[] {
         return cargoTable.toArray();
     };
@@ -79,6 +83,7 @@ service /sales on new http:Listener(9090) {
             scopes: ["cargo_read", "cargo_insert"]
         }
     }
+    // Example: http://localhost:9090/sales/cargos/C-124
     resource function get cargos/[string id]() returns Cargo|http:NotFound {
         if cargoTable.hasKey(id) {
             return cargoTable.get(id);
