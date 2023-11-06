@@ -1,9 +1,31 @@
 import ballerina/http;
 
+type Order record {|
+    readonly string orderId;
+    string customerId;
+    string? shipId;
+    string date;
+    OrderStatus status;
+    int quantity;
+    string item;
+|};
+
+enum OrderStatus {
+    PENDING,
+    SHIPPED,
+    DELIVERED,
+    CANCELED,
+    RETURNED
+};
+
+final table<Order> key(orderId) orderTable = table [
+    {orderId: "HM-278", quantity: 5, item: "TV", customerId: "C-124", shipId: "S-8", date: "22-11-2023", status: PENDING},
+    {orderId: "HM-340", quantity: 3, item: "IPhone 14", customerId: "C-73", shipId: "S-32", date: "12-11-2023", status: DELIVERED}
+];
+
 @http:ServiceConfig {
     cors: {
         allowOrigins: ["http://localhost:3000", "http://www.hmart-dev.com", "http://www.hmart.com"],
-        allowCredentials: false,
         allowHeaders: ["REQUEST_ID"],
         exposeHeaders: ["RESPONSE_ID"],
         maxAge: 84900
@@ -24,9 +46,9 @@ service /sales on new http:Listener(9090) {
             allowCredentials: true
         }
     }
-    resource function post orders(Order 'order) returns http:Ok {
-        orderTable.add('order);
-        return <http:Ok> { body: { message: "Order submitted successfully" }};
+    resource function post orders(Order orderEntry) returns http:Ok {
+        orderTable.add(orderEntry);
+        return <http:Ok>{ body: { message: "Order submitted successfully" }};
     };
 
     resource function get orders() returns Order[] {
