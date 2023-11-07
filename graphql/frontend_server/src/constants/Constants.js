@@ -11,7 +11,7 @@ export const graphQlUrl = serverUrl + "/sales";
 export const getOrdersQuery = 
     gql `query getOrdersQuery($customerId: String) {
             orders(customerId: $customerId) {
-                orderId
+                id
                 status
                 customerId
                 item
