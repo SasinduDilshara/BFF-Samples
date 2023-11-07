@@ -45,7 +45,7 @@ const Page = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await getAPI(cargo != '' ? getCargoOrderUrl + "?cargoId=" + cargo + "&status=" + status: getOrderUrl);
+      const response = await getAPI(cargo != '' ? getCargoOrderUrl(cargo): getOrderUrl);
       if (response.status !== 200) {
         setError(response.message);
       } else {
