@@ -1,30 +1,25 @@
 import ballerina/log;
 import ballerina/http;
 
+configurable string tokenUrl = ?;
+configurable string introspectUrl = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable string certPath = ?;
+
 listener http:Listener shipexListner = check new (9092);
 
 @http:ServiceConfig {
-    cors: {
-        allowOrigins: ["*"]
-    },
-    auth: [
-        {
+    cors: { allowOrigins: ["*"] },
+    auth: [{
             oauth2IntrospectionConfig: {
-                url: "https://api.asgardeo.io/t/orgsd/oauth2/introspect",
-                tokenTypeHint: "access_token",
+                url: introspectUrl, tokenTypeHint: "access_token",
                 clientConfig: {
-                    secureSocket: {
-                        cert: "../../resources/public.crt"
-                    },
-                    auth: {
-                        clientId: "<Client_id>",
-                        clientSecret: "<client_secret>",
-                        tokenUrl: "https://api.asgardeo.io/t/orgsd/oauth2/token"
-                    }
-                }
-            }
-        }
-    ]
+                    secureSocket: { cert: certPath }, 
+                    auth: { clientId, clientSecret, tokenUrl } } 
+                },
+            scopes: ["cargo_read"]
+        }]
 }
 service / on shipexListner {
     resource function post shipments() returns http:Accepted {

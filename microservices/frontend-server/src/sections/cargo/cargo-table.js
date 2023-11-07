@@ -57,7 +57,7 @@ export const CargosTable = (props) => {
                       {cargo.endFrom}
                     </TableCell>
                     <TableCell>
-                      {cargo.type}
+                      {cargo.cargoType}
                     </TableCell>
                   </TableRow>
                 );
