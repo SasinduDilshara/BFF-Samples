@@ -12,14 +12,14 @@ listener http:Listener tradelogixListner = check new (9093);
 @http:ServiceConfig {
     cors: { allowOrigins: ["*"] },
     auth: [{
-            oauth2IntrospectionConfig: {
-                url: introspectUrl, tokenTypeHint: "access_token",
-                clientConfig: {
-                    secureSocket: { cert: certPath }, 
-                    auth: { clientId, clientSecret, tokenUrl } } 
-                },
-            scopes: ["cargo_read"]
-        }]
+        oauth2IntrospectionConfig: {
+            url: introspectUrl, tokenTypeHint: "access_token",
+            clientConfig: {
+                secureSocket: { cert: certPath }, 
+                auth: { clientId, clientSecret, tokenUrl } } 
+            },
+        scopes: ["cargo_read"]
+    }]
 }
 service / on tradelogixListner {
     resource function post shipments() returns http:Accepted {
