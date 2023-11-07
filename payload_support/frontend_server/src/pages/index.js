@@ -3,7 +3,7 @@ import Head from 'next/head';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
 import { CustomersTable } from 'src/sections/customer/customers-table';
-import { getCustomersUrl } from 'src/constants/Constants';
+import { getCustomerAgreementUrl, getCustomersUrl } from 'src/constants/Constants';
 import { getAPI } from 'src/api/ApiHandler';
 import SimpleDialog from 'src/sections/customer/view-customer';
 
@@ -17,7 +17,7 @@ const Page = () => {
 
   const fetchCustomerData = async (customerId) => {
     try {
-      const response = await getAPI(getCustomersUrl + "/" + customerId + "/agreement");
+      const response = await getAPI(getCustomerAgreementUrl(customerId));
       if (response.status !== 200) {
         setError(response.message);
       } else {

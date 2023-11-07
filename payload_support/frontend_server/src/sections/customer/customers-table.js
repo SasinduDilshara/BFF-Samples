@@ -59,7 +59,7 @@ export const CustomersTable = (props) => {
                       {customer.dependents}
                     </TableCell>
                     <TableCell>
-                      <Button onClick={() => handleClick(customer.customerId)}>View</Button>
+                      <Button onClick={() => handleClick(customer.customerId)}>View Agreement</Button>
                     </TableCell>
                   </TableRow>
                 );
